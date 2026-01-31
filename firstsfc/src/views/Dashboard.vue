@@ -77,88 +77,76 @@ onMounted(async () => {
 </script>
 
 <style scoped>
-/* 1. Wrapper & Footer Fix */
 .dashboard-wrapper {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
 }
-.dashboard-footer {
-  text-align: center;
-  padding: 30px 0;
-  color: #94a3b8;
-  font-size: 0.85rem;
-  margin-top: auto; /* Pushes to bottom */
+
+.navbar {
+  background: white;
+  padding: 1.2rem 5%;
+  display: flex;
+  justify-content: space-between; /* Fixes navigation layout */
+  align-items: center;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 1000;
 }
 
-/* 2. Modal Overlay - The Darkened Background */
+.nav-links {
+  display: flex;
+  list-style: none; /* Removes the dots */
+  gap: 2rem;
+}
+
+.container {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-top: 80px;
+}
+
+.dashboard-card {
+  background: white;
+  padding: 80px 40px;
+  border-radius: 50px;
+  width: 90%;
+  max-width: 650px;
+  text-align: center;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.04);
+}
+
+/* Modal Styling */
 .modal-overlay {
   position: fixed;
   top: 0;
   left: 0;
-  width: 100vw;
-  height: 100vh;
-  background: rgba(0, 0, 0, 0.4); /* Matches darkened background in image */
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.4);
   display: flex;
   justify-content: center;
   align-items: center;
   z-index: 2000;
 }
 
-/* 3. Modal Content - The White Box */
 .modal-content {
   background: white;
+  padding: 40px;
+  border-radius: 30px;
   width: 90%;
-  max-width: 600px;
-  padding: 35px;
-  border-radius: 28px; /* Smooth rounded corners */
-  box-shadow: 0 10px 40px rgba(0,0,0,0.1);
-  animation: slideUp 0.3s ease-out;
+  max-width: 550px;
 }
 
-/* 4. Log Table Styling */
-.logs-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 10px;
-}
-.logs-table th {
-  text-align: left;
-  color: #64748b;
-  font-size: 0.9rem;
-  border-bottom: 2px solid #f1f5f9;
-  padding: 10px 0;
-}
-.logs-table td {
-  padding: 15px 0;
-  border-bottom: 1px solid #f8fafc;
-  color: #1e293b;
-  font-weight: 500;
-}
-.empty-msg {
+.dashboard-footer {
+  text-align: center;
+  padding: 30px 0;
   color: #94a3b8;
-  padding: 60px 0;
-}
-
-/* 5. Modal Navigation Components */
-.modal-header {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 30px;
-}
-.close-icon { font-size: 24px; color: #cbd5e1; cursor: pointer; }
-.close-btn {
-  background: #f1f5f9;
-  border: none;
-  padding: 12px 30px;
-  border-radius: 12px;
-  font-weight: 600;
-  color: #475569;
-  cursor: pointer;
-}
-
-@keyframes slideUp {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
+  font-size: 0.85rem;
+  margin-top: auto;
 }
 </style>
