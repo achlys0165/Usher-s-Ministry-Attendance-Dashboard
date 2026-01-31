@@ -6,7 +6,7 @@ import { RouterView } from 'vue-router'
   <RouterView />
 
   <footer>
-    <p>&copy; 2024 Usher's Ministry. All rights reserved. </p>
+    <p>&copy; 2026 Usher's Ministry. All rights reserved. </p>
   </footer>
 </template>
 

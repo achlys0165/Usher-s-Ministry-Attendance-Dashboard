@@ -1,20 +1,20 @@
 <template>
-  <div class="wrapper">
-    <nav class="navbar"> [cite: 16]
-      <div class="nav-logo">Usher's Ministry - Attendance Dashboard</div> 
+  <div class="dashboard-wrapper">
+    <nav class="navbar">
+      <div class="nav-logo">Usher's Ministry – Attendance Dashboard</div>
       <ul class="nav-links">
-        <li><a @click="showLogs = true" class="logs" href="#">Logs</a></li> 
-        <li><router-link to="/" class="logout">Logout</router-link></li> 
+        <li><a href="#" @click.prevent="showLogs = true" class="logs">Logs</a></li>
+        <li><router-link to="/" class="logout">Logout</router-link></li>
       </ul>
     </nav>
 
-    <main class="container"> 
-      <div class="dashboard-card"> 
-        <div class="status-circle"> 
-          <span>u</span> 
+    <main class="container">
+      <div class="dashboard-card">
+        <div class="status-circle">
+          <span>u</span>
         </div>
-        <h1>Ready to Tap Card</h1> 
-        <p class="dashboard-title">Please Tap your NFC ID to log attendance</p> 
+        <h1>READY TO TAP CARD</h1>
+        <p>Please Tap your NFC ID to log attendance</p>
       </div>
     </main>
 
@@ -32,27 +32,150 @@
         </div>
       </div>
     </div>
-
-    <footer>
-      <p>&copy; 2024 Usher's Ministry. All rights reserved.</p>
-    </footer>
   </div>
 </template>
 
 <script setup>
 import { ref } from 'vue';
-
 const showLogs = ref(false);
 </script>
 
 <style scoped>
-/* Dashboard Styling [cite: 25, 26] */
-.dashboard-card { width: 85%; max-width: 800px; padding: 90px; background: white; border-radius: 50px; text-align: center; }
-.status-circle { width: 80px; height: 80px; background: #ffe2ec; border-radius: 50%; display: flex; justify-content: center; align-items: center; margin: 0 auto 40px; animation: softBlink 2s infinite ease-in-out; color: #F9707E; font-weight: 700; font-size: 2rem; } 
+.dashboard-wrapper {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
 
-/* Modal Styles from your design request */
-.modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); display: flex; justify-content: center; align-items: center; z-index: 2000; }
-.modal-content { background: white; width: 600px; padding: 40px; border-radius: 24px; }
-.modal-header { display: flex; justify-content: space-between; margin-bottom: 40px; }
-.close-btn { background: #f1f5f9; padding: 10px 25px; border-radius: 12px; border: none; cursor: pointer; }
+.navbar {
+    background: white;
+    padding: 1rem 5%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 1000;
+}
+
+.nav-logo {
+    font-weight: 700;
+    color: #F9707E;
+}
+
+.nav-links {
+    list-style: none;
+    display: flex;
+    gap: 1rem;
+}
+
+.nav-links a {
+    text-decoration: none;
+    font-weight: 500;
+    color: #F9707E;
+    padding: 8px 15px;
+}
+
+.container {
+    margin-top: 100px;
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.dashboard-card {
+    width: 85%;
+    max-width: 700px;
+    padding: 60px;
+    background: white;
+    border-radius: 50px;
+    text-align: center;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.04);
+}
+
+.status-circle {
+    width: 70px;
+    height: 70px;
+    background-color: #ffe2ec;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 auto 30px;
+    color: #F9707E;
+    font-weight: 700;
+    font-size: 1.5rem;
+    animation: softBlink 2s infinite ease-in-out;
+}
+
+.dashboard-card h1 {
+    font-size: 2.2rem;
+    font-weight: 800;
+    color: #1a202c;
+    margin-bottom: 10px;
+}
+
+.dashboard-card p {
+    color: #718096;
+    font-size: 1.1rem;
+}
+
+/* Modal Styles */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.3);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+}
+
+.modal-content {
+    background: white;
+    width: 90%;
+    max-width: 550px;
+    padding: 30px;
+    border-radius: 25px;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 50px;
+}
+
+.close-icon {
+    font-size: 24px;
+    cursor: pointer;
+    color: #94a3b8;
+}
+
+.modal-body {
+    text-align: center;
+    margin-bottom: 50px;
+    color: #94a3b8;
+}
+
+.modal-footer {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.close-btn {
+    padding: 10px 25px;
+    background: #f1f5f9;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    font-weight: 600;
+}
 </style>
