@@ -35,8 +35,10 @@ const email = ref('');
 const password = ref('');
 const errorMessage = ref('');
 
-// Replace with your actual Supabase details
-const supabase = createClient('YOUR_SUPABASE_URL', 'YOUR_SUPABASE_ANON_KEY');
+const supabase = createClient(
+  import.meta.env.VITE_SUPABASE_URL, 
+  import.meta.env.VITE_SUPABASE_ANON_KEY
+);
 
 const handleLogin = async () => {
   errorMessage.value = '';
