@@ -41,12 +41,19 @@ const showLogs = ref(false);
 </script>
 
 <style scoped>
-/* 1. Navbar Fix: Ensures links show on the right */
+.dashboard-wrapper {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Navigation Styles - Restores the layout in your screenshot */
 .navbar {
     background: white;
-    padding: 1.2rem 5%;
+    padding: 1rem 5%;
     display: flex;
-    justify-content: space-between; /* This fixes your missing links */
+    justify-content: space-between; /* This pushes links to the right */
     align-items: center;
     box-shadow: 0 2px 10px rgba(0,0,0,0.05);
     position: fixed;
@@ -54,78 +61,136 @@ const showLogs = ref(false);
     left: 0;
     width: 100%;
     z-index: 1000;
-    box-sizing: border-box;
+    box-sizing: border-box; /* Prevents navbar from overflowing the screen */
 }
 
 .nav-logo {
     font-weight: 700;
-    color: #F9707E;
-    font-size: 1.1rem;
+    color: #F9707E; /* Your signature pink */
 }
 
 .nav-links {
     list-style: none;
     display: flex;
-    gap: 2rem;
+    gap: 2rem; /* Adds space between Logs and Logout */
     margin: 0;
     padding: 0;
 }
 
 .logs, .logout {
     text-decoration: none;
-    font-weight: 600;
+    font-weight: 500;
     color: #F9707E;
-    font-size: 0.95rem;
+    padding: 8px 20px;
+    transition: all 0.3s ease;
     cursor: pointer;
 }
 
-/* 2. Layout Fix: Centering and Sizing */
+.logs:hover, .logout:hover {
+    color: white;
+    background: #F9707E;
+    border-radius: 20px;
+}
+
+/* Dashboard Content Adjustments */
 .container {
-    padding-top: 80px; /* Space for navbar */
-    min-height: 100vh;
+    margin-top: 100px; /* Space for the fixed navbar */
+    flex: 1;
     display: flex;
     justify-content: center;
     align-items: center;
-    background: #ffe2ec; /* Pink background from image */
 }
+/* ... keep your existing dashboard-card and status-circle styles ... */
 
 .dashboard-card {
-    width: 90%;
-    max-width: 650px; /* Matches the proportions in image_ae01dd.png */
-    padding: 80px 40px;
+    width: 85%;
+    max-width: 700px;
+    padding: 60px;
     background: white;
-    border-radius: 40px;
+    border-radius: 50px;
     text-align: center;
-    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.03);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.04);
 }
 
 .status-circle {
-    width: 80px;
-    height: 80px;
+    width: 70px;
+    height: 70px;
     background-color: #ffe2ec;
     border-radius: 50%;
     display: flex;
     justify-content: center;
     align-items: center;
-    margin: 0 auto 35px;
+    margin: 0 auto 30px;
     color: #F9707E;
     font-weight: 700;
-    font-size: 1.8rem;
-    /* Uses your custom blink animation */
-    animation: softBlink 2s infinite ease-in-out; 
+    font-size: 1.5rem;
+    animation: softBlink 2s infinite ease-in-out;
 }
 
 .dashboard-card h1 {
-    font-size: 2.5rem; /* Larger, bold font from image */
-    font-weight: 900;
-    color: #1e293b;
-    margin-bottom: 15px;
-    letter-spacing: 1px;
+    font-size: 2.2rem;
+    font-weight: 800;
+    color: #1a202c;
+    margin-bottom: 10px;
 }
 
 .dashboard-card p {
-    color: #64748b;
+    color: #718096;
     font-size: 1.1rem;
-    font-weight: 500;
+}
+
+/* Modal Styles */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.3);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+}
+
+.modal-content {
+    background: white;
+    width: 90%;
+    max-width: 550px;
+    padding: 30px;
+    border-radius: 25px;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 50px;
+}
+
+.close-icon {
+    font-size: 24px;
+    cursor: pointer;
+    color: #94a3b8;
+}
+
+.modal-body {
+    text-align: center;
+    margin-bottom: 50px;
+    color: #94a3b8;
+}
+
+.modal-footer {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.close-btn {
+    padding: 10px 25px;
+    background: #f1f5f9;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    font-weight: 600;
 }
 </style>
