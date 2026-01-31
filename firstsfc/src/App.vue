@@ -1,12 +1,14 @@
 <template>
-  <router-view />
+  <div id="app">
+    <router-view></router-view>
+  </div>
 </template>
 
 <script setup>
-// No extra logic needed here
+// No extra logic needed
 </script>
 
 <style>
-/* Global styles */
+/* Import your global pink theme */
 @import './assets/main.css';
 </style>
