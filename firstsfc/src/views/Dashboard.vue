@@ -68,13 +68,35 @@ onMounted(async () => {
 
 <style scoped>
 .dashboard-wrapper {
-  width: 100%;
-  min-height: 100vh;
   display: flex;
   flex-direction: column;
+  min-height: 100vh;
+  width: 100%;
 }
 
-/* Navbar Fix: Pushes links to the far right [cite: 16, 19] */
+.modal-overlay {
+  position: fixed; /* Fixes it to the viewport */
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5); /* Dims the background */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2000; /* Ensures it is above everything else */
+}
+
+.modal-content {
+  background: white;
+  padding: 40px;
+  border-radius: 30px;
+  width: 90%;
+  max-width: 600px;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+}
+
+/* Navbar Fix: Pushes links to the far right */
 .navbar {
     background: white;
     padding: 1rem 5%;
@@ -83,6 +105,7 @@ onMounted(async () => {
     align-items: center;
     box-shadow: 0 2px 10px rgba(0,0,0,0.05);
     position: fixed;
+    padding: 1.5rem 5%;
     top: 0;
     left: 0;
     width: 100%;
