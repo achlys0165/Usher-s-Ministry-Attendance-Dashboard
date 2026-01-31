@@ -67,79 +67,95 @@ onMounted(async () => {
 </script>
 
 <style scoped>
-/* Ensure these styles match your fixed dimensions exactly */
 .dashboard-wrapper {
   width: 100%;
   min-height: 100vh;
-  background: #ffe2ec; /* Pink theme */
+  display: flex;
+  flex-direction: column;
 }
 
+/* Navbar Fix: Pushes links to the far right [cite: 16, 19] */
 .navbar {
-  background: white;
-  padding: 1rem 5%;
-  display: flex;
-  justify-content: space-between; /* Pushes logs/logout to the right */
-  align-items: center;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-  position: fixed;
-  top: 0;
-  width: 100%;
-  z-index: 1000;
-  box-sizing: border-box;
+    background: white;
+    padding: 1rem 5%;
+    display: flex;
+    justify-content: space-between; 
+    align-items: center;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+    box-sizing: border-box;
 }
 
+.nav-logo {
+    font-weight: 700;
+    color: #F9707E;
+}
+
+.nav-links {
+    list-style: none;
+    display: flex;
+    gap: 2rem;
+    margin: 0;
+    padding: 0;
+}
+
+.logs, .logout {
+    text-decoration: none;
+    font-weight: 500;
+    color: #F9707E;
+    padding: 8px 20px;
+    cursor: pointer;
+}
+
+/* Card Centering Fix: Ensuring it stays in the middle of the pink [cite: 24, 25] */
 .container {
-  padding-top: 100px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: calc(100vh - 100px);
+    margin-top: 80px; /* Space for the fixed navbar  */
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
 }
 
 .dashboard-card {
-  width: 90%;
-  max-width: 700px; /* Fixed size */
-  padding: 80px 40px;
-  background: white;
-  border-radius: 50px;
-  text-align: center;
-  box-shadow: 0 20px 50px rgba(0,0,0,0.04);
+    width: 90%;
+    max-width: 600px; /* Matches the proportions in image_ae01dd */
+    padding: 80px 40px;
+    background: white;
+    border-radius: 50px; /* Signature rounded look [cite: 25] */
+    text-align: center;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.04);
 }
 
 .status-circle {
-  width: 80px;
-  height: 80px;
-  background: #ffe2ec;
-  border-radius: 50%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin: 0 auto 40px;
-  color: #F9707E;
-  font-weight: 700;
-  font-size: 2rem;
-  animation: softBlink 2s infinite ease-in-out; /* The blinking effect */
+    width: 80px;
+    height: 80px;
+    background-color: #ffe2ec;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 auto 40px;
+    color: #F9707E;
+    font-weight: 700;
+    font-size: 2rem;
+    animation: softBlink 2s infinite ease-in-out; /* [cite: 34] */
 }
 
-/* Modal styles from your screenshot */
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0,0,0,0.4);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 2000;
+.dashboard-card h1 {
+    font-size: 2.5rem;
+    font-weight: 900;
+    color: #1a202c;
+    margin-bottom: 10px;
+    text-transform: uppercase;
 }
 
-.modal-content {
-  background: white;
-  width: 90%;
-  max-width: 600px;
-  padding: 40px;
-  border-radius: 30px;
+.dashboard-card p {
+    color: #718096;
+    font-size: 1.1rem;
 }
 </style>
