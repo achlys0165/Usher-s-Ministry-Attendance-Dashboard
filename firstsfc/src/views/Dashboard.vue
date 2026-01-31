@@ -77,31 +77,43 @@ onMounted(async () => {
 </script>
 
 <style scoped>
+/* 1. Reset and Layout - Restores background from image_ae6336 */
 .dashboard-wrapper {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+  background-color: #ffe2ec;
 }
 
+/* 2. Navbar Fix - Restores space-between layout from image_ae6793 */
 .navbar {
   background: white;
   padding: 1.2rem 5%;
   display: flex;
-  justify-content: space-between; /* Fixes navigation layout */
+  justify-content: space-between;
   align-items: center;
   box-shadow: 0 2px 10px rgba(0,0,0,0.05);
   position: fixed;
   top: 0;
   width: 100%;
   z-index: 1000;
+  box-sizing: border-box;
 }
 
 .nav-links {
   display: flex;
-  list-style: none; /* Removes the dots */
+  list-style: none; /* Removes bullet points from image_7a9d15 */
   gap: 2rem;
 }
 
+.logs, .logout {
+  text-decoration: none;
+  font-weight: 600;
+  color: #F9707E;
+  font-size: 0.95rem;
+}
+
+/* 3. Container & Card - Restores centering from image_ae01dd */
 .container {
   flex: 1;
   display: flex;
@@ -120,7 +132,22 @@ onMounted(async () => {
   box-shadow: 0 20px 50px rgba(0,0,0,0.04);
 }
 
-/* Modal Styling */
+.status-circle {
+  width: 80px;
+  height: 80px;
+  background-color: #ffe2ec;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0 auto 35px;
+  color: #F9707E;
+  font-weight: 700;
+  font-size: 1.8rem;
+  animation: softBlink 2s infinite ease-in-out;
+}
+
+/* 4. Modal Overlay Fix - Prevents layout chaos from image_7aafdd */
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -142,6 +169,7 @@ onMounted(async () => {
   max-width: 550px;
 }
 
+/* 5. Footer - Restores position from image_7ba71e */
 .dashboard-footer {
   text-align: center;
   padding: 30px 0;
