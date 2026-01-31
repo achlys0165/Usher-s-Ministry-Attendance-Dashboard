@@ -86,31 +86,49 @@ onMounted(async () => {
 }
 
 /* 2. Navbar Fix - Restores space-between layout from image_ae6793 */
+/* 1. Reset and Positioning */
 .navbar {
-  background: white;
-  padding: 1.2rem 5%;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-  position: fixed;
-  top: 0;
-  width: 100%;
-  z-index: 1000;
-  box-sizing: border-box;
+    background: white;
+    padding: 1.2rem 5%;
+    display: flex;
+    justify-content: space-between; /* This pushes links to the far right */
+    align-items: center;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+    box-sizing: border-box; /* Ensures padding doesn't break width */
 }
 
+/* 2. Brand Styling */
+.nav-logo {
+    font-weight: 700;
+    color: #F9707E; /* Signature Pink */
+    font-size: 1.1rem;
+}
+
+/* 3. Navigation Links Fix */
 .nav-links {
-  display: flex;
-  list-style: none; /* Removes bullet points from image_7a9d15 */
-  gap: 2rem;
+    list-style: none; /* Removes the dots/bullets */
+    display: flex;
+    gap: 2.5rem; /* Adds clean spacing between Logs and Logout */
+    margin: 0;
+    padding: 0;
 }
 
 .logs, .logout {
-  text-decoration: none;
-  font-weight: 600;
-  color: #F9707E;
-  font-size: 0.95rem;
+    text-decoration: none;
+    font-weight: 600;
+    color: #F9707E;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: opacity 0.3s ease;
+}
+
+.logs:hover, .logout:hover {
+    opacity: 0.7;
 }
 
 /* 3. Container & Card - Restores centering from image_ae01dd */
