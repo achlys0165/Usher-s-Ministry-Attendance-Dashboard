@@ -4,15 +4,13 @@
       <div class="nav-logo">Usher's Ministry – Attendance Dashboard</div>
       <ul class="nav-links">
         <li><a href="#" @click.prevent="showLogs = true" class="logs">Logs</a></li>
-        <li><a href="#" @click.prevent="handleLogout" class="logout">Logout</a></li>
+        <li><router-link to="/" class="logout">Logout</router-link></li>
       </ul>
     </nav>
 
     <main class="container">
       <div class="dashboard-card">
-        <div class="status-circle">
-          <span>u</span>
-        </div>
+        <div class="status-circle"><span>u</span></div>
         <h1>READY TO TAP CARD</h1>
         <p>Please Tap your NFC ID to log attendance</p>
       </div>
@@ -25,19 +23,31 @@
           <span class="close-icon" @click="showLogs = false">&times;</span>
         </div>
         <div class="modal-body">
-          <p v-if="logs.length === 0">No attendance records for today yet.</p>
-          <div v-else class="logs-list">
-            <div v-for="log in logs" :key="log.id" class="log-entry">
-              <span>{{ log.name }}</span>
-              <span>{{ log.time }}</span>
-            </div>
-          </div>
+          <table v-if="logs.length > 0" class="logs-table">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Time</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="log in logs" :key="log.id">
+                <td>{{ log.full_name }}</td>
+                <td>{{ new Date(log.tap_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) }}</td>
+              </tr>
+            </tbody>
+          </table>
+          <p v-else class="empty-msg">No attendance records for today yet.</p>
         </div>
         <div class="modal-footer">
           <button class="close-btn" @click="showLogs = false">Close</button>
         </div>
       </div>
     </div>
+
+    <footer class="dashboard-footer">
+      <p>&copy; 2026 Usher's Ministry. All rights reserved.</p>
+    </footer>
   </div>
 </template>
 
@@ -67,118 +77,88 @@ onMounted(async () => {
 </script>
 
 <style scoped>
+/* 1. Wrapper & Footer Fix */
 .dashboard-wrapper {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  width: 100%;
+}
+.dashboard-footer {
+  text-align: center;
+  padding: 30px 0;
+  color: #94a3b8;
+  font-size: 0.85rem;
+  margin-top: auto; /* Pushes to bottom */
 }
 
+/* 2. Modal Overlay - The Darkened Background */
 .modal-overlay {
-  position: fixed; /* Fixes it to the viewport */
+  position: fixed;
   top: 0;
   left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.5); /* Dims the background */
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.4); /* Matches darkened background in image */
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 2000; /* Ensures it is above everything else */
+  z-index: 2000;
 }
 
+/* 3. Modal Content - The White Box */
 .modal-content {
   background: white;
-  padding: 40px;
-  border-radius: 30px;
   width: 90%;
   max-width: 600px;
-  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+  padding: 35px;
+  border-radius: 28px; /* Smooth rounded corners */
+  box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+  animation: slideUp 0.3s ease-out;
 }
 
-/* Navbar Fix: Pushes links to the far right */
-.navbar {
-    background: white;
-    padding: 1rem 5%;
-    display: flex;
-    justify-content: space-between; 
-    align-items: center;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-    position: fixed;
-    padding: 1.5rem 5%;
-    top: 0;
-    left: 0;
-    width: 100%;
-    z-index: 1000;
-    box-sizing: border-box;
+/* 4. Log Table Styling */
+.logs-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+.logs-table th {
+  text-align: left;
+  color: #64748b;
+  font-size: 0.9rem;
+  border-bottom: 2px solid #f1f5f9;
+  padding: 10px 0;
+}
+.logs-table td {
+  padding: 15px 0;
+  border-bottom: 1px solid #f8fafc;
+  color: #1e293b;
+  font-weight: 500;
+}
+.empty-msg {
+  color: #94a3b8;
+  padding: 60px 0;
 }
 
-.nav-logo {
-    font-weight: 700;
-    color: #F9707E;
+/* 5. Modal Navigation Components */
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 30px;
+}
+.close-icon { font-size: 24px; color: #cbd5e1; cursor: pointer; }
+.close-btn {
+  background: #f1f5f9;
+  border: none;
+  padding: 12px 30px;
+  border-radius: 12px;
+  font-weight: 600;
+  color: #475569;
+  cursor: pointer;
 }
 
-.nav-links {
-    list-style: none;
-    display: flex;
-    gap: 2rem;
-    margin: 0;
-    padding: 0;
-}
-
-.logs, .logout {
-    text-decoration: none;
-    font-weight: 500;
-    color: #F9707E;
-    padding: 8px 20px;
-    cursor: pointer;
-}
-
-/* Card Centering Fix: Ensuring it stays in the middle of the pink [cite: 24, 25] */
-.container {
-    margin-top: 80px; /* Space for the fixed navbar  */
-    flex: 1;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 20px;
-}
-
-.dashboard-card {
-    width: 90%;
-    max-width: 600px; /* Matches the proportions in image_ae01dd */
-    padding: 80px 40px;
-    background: white;
-    border-radius: 50px; /* Signature rounded look [cite: 25] */
-    text-align: center;
-    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.04);
-}
-
-.status-circle {
-    width: 80px;
-    height: 80px;
-    background-color: #ffe2ec;
-    border-radius: 50%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin: 0 auto 40px;
-    color: #F9707E;
-    font-weight: 700;
-    font-size: 2rem;
-    animation: softBlink 2s infinite ease-in-out; /* [cite: 34] */
-}
-
-.dashboard-card h1 {
-    font-size: 2.5rem;
-    font-weight: 900;
-    color: #1a202c;
-    margin-bottom: 10px;
-    text-transform: uppercase;
-}
-
-.dashboard-card p {
-    color: #718096;
-    font-size: 1.1rem;
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 </style>
