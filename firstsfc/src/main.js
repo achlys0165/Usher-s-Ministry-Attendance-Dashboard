@@ -16,13 +16,3 @@ const app = createApp(App)
 app.use(router)
 app.mount('#app')
 
-router.beforeEach(async (to, from, next) => {
-  const { data: { session } } = await supabase.auth.getSession();
-
-  if (to.path === '/dashboard' && !session) {
-    // If trying to access dashboard without login, send to login
-    next('/');
-  } else {
-    next();
-  }
-});
