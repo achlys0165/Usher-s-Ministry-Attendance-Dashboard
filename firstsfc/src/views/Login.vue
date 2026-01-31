@@ -1,48 +1,25 @@
 <template>
-  <div class="dashboard-wrapper">
-    <nav class="navbar">
-      <div class="nav-logo">Usher's Ministry – Attendance Dashboard</div>
-      <ul class="nav-links">
-        <li><a href="#" @click.prevent="showLogs = true" class="logs">Logs</a></li>
-        <li><router-link to="/" class="logout">Logout</router-link></li>
-      </ul>
-    </nav>
+  <div class="login-container">
+    <div class="card">
+      <form @submit.prevent="handleLogin">
+        <h1>Admin Login</h1>
+        <p class="dashboard-title">Usher’s Ministry – Attendance Dashboard</p>
+        
+        <p v-if="errorMessage" class="error-text">{{ errorMessage }}</p>
 
-    <main class="container">
-      <div class="dashboard-card">
-        <div class="status-circle"><span>u</span></div>
-        <h1>READY TO TAP CARD</h1>
-        <p>Please Tap your NFC ID to log attendance</p>
-      </div>
-    </main>
-
-    <div v-if="showLogs" class="modal-overlay" @click.self="showLogs = false">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h2>Today's Attendance Logs</h2>
-          <span class="close-icon" @click="showLogs = false">&times;</span>
+        <div class="input_field">
+          <input type="email" v-model="email" placeholder="Username" required>
         </div>
-        <div class="modal-body">
-          <table v-if="logs.length > 0" class="logs-table">
-            <thead>
-              <tr><th>Name</th><th>Time</th></tr>
-            </thead>
-            <tbody>
-              <tr v-for="log in logs" :key="log.id">
-                <td>{{ log.full_name }}</td>
-                <td>{{ new Date(log.tap_time).toLocaleTimeString() }}</td>
-              </tr>
-            </tbody>
-          </table>
-          <p v-else class="empty-msg">No attendance records for today yet.</p>
+        
+        <div class="input_field">
+          <input type="password" v-model="password" placeholder="Password" required>
         </div>
-        <div class="modal-footer">
-          <button class="close-btn" @click="showLogs = false">Close</button>
-        </div>
-      </div>
+        
+        <button type="submit" class="btn">Access Dashboard</button>
+      </form>
     </div>
-
-    <footer class="dashboard-footer">
+    
+    <footer class="login-footer">
       <p>&copy; 2026 Usher's Ministry. All rights reserved.</p>
     </footer>
   </div>
