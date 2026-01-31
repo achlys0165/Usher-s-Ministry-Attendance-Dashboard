@@ -48,44 +48,59 @@ const showLogs = ref(false);
   flex-direction: column;
 }
 
+/* Navigation Styles - Restores the layout in your screenshot */
 .navbar {
     background: white;
     padding: 1rem 5%;
     display: flex;
-    justify-content: space-between;
+    justify-content: space-between; /* This pushes links to the right */
     align-items: center;
     box-shadow: 0 2px 10px rgba(0,0,0,0.05);
     position: fixed;
     top: 0;
+    left: 0;
     width: 100%;
     z-index: 1000;
+    box-sizing: border-box; /* Prevents navbar from overflowing the screen */
 }
 
 .nav-logo {
     font-weight: 700;
-    color: #F9707E;
+    color: #F9707E; /* Your signature pink */
 }
 
 .nav-links {
     list-style: none;
     display: flex;
-    gap: 1rem;
+    gap: 2rem; /* Adds space between Logs and Logout */
+    margin: 0;
+    padding: 0;
 }
 
-.nav-links a {
+.logs, .logout {
     text-decoration: none;
     font-weight: 500;
     color: #F9707E;
-    padding: 8px 15px;
+    padding: 8px 20px;
+    transition: all 0.3s ease;
+    cursor: pointer;
 }
 
+.logs:hover, .logout:hover {
+    color: white;
+    background: #F9707E;
+    border-radius: 20px;
+}
+
+/* Dashboard Content Adjustments */
 .container {
-    margin-top: 100px;
+    margin-top: 100px; /* Space for the fixed navbar */
     flex: 1;
     display: flex;
     justify-content: center;
     align-items: center;
 }
+/* ... keep your existing dashboard-card and status-circle styles ... */
 
 .dashboard-card {
     width: 85%;
