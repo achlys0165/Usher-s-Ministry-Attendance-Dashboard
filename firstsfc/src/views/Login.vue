@@ -1,25 +1,48 @@
 <template>
-  <div class="login-container">
-    <div class="card">
-      <form @submit.prevent="handleLogin">
-        <h1>Admin Login</h1>
-        <p class="dashboard-title">Usher’s Ministry – Attendance Dashboard</p>
-        
-        <p v-if="errorMessage" class="error-text">{{ errorMessage }}</p>
+  <div class="dashboard-wrapper">
+    <nav class="navbar">
+      <div class="nav-logo">Usher's Ministry – Attendance Dashboard</div>
+      <ul class="nav-links">
+        <li><a href="#" @click.prevent="showLogs = true" class="logs">Logs</a></li>
+        <li><router-link to="/" class="logout">Logout</router-link></li>
+      </ul>
+    </nav>
 
-        <div class="input_field">
-          <input type="email" v-model="email" placeholder="Username" required>
+    <main class="container">
+      <div class="dashboard-card">
+        <div class="status-circle"><span>u</span></div>
+        <h1>READY TO TAP CARD</h1>
+        <p>Please Tap your NFC ID to log attendance</p>
+      </div>
+    </main>
+
+    <div v-if="showLogs" class="modal-overlay" @click.self="showLogs = false">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2>Today's Attendance Logs</h2>
+          <span class="close-icon" @click="showLogs = false">&times;</span>
         </div>
-        
-        <div class="input_field">
-          <input type="password" v-model="password" placeholder="Password" required>
+        <div class="modal-body">
+          <table v-if="logs.length > 0" class="logs-table">
+            <thead>
+              <tr><th>Name</th><th>Time</th></tr>
+            </thead>
+            <tbody>
+              <tr v-for="log in logs" :key="log.id">
+                <td>{{ log.full_name }}</td>
+                <td>{{ new Date(log.tap_time).toLocaleTimeString() }}</td>
+              </tr>
+            </tbody>
+          </table>
+          <p v-else class="empty-msg">No attendance records for today yet.</p>
         </div>
-        
-        <button type="submit" class="btn">Access Dashboard</button>
-      </form>
+        <div class="modal-footer">
+          <button class="close-btn" @click="showLogs = false">Close</button>
+        </div>
+      </div>
     </div>
-    
-    <footer class="login-footer">
+
+    <footer class="dashboard-footer">
       <p>&copy; 2026 Usher's Ministry. All rights reserved.</p>
     </footer>
   </div>
@@ -56,80 +79,104 @@ const handleLogin = async () => {
 </script>
 
 <style scoped>
-.login-container {
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    background: #ffe2ec; /* Pink background from your images */
+/* 1. Reset and Layout - Restores background from image_ae6336 */
+.dashboard-wrapper {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: #ffe2ec;
 }
 
-.card {
-    width: 420px;
-    padding: 40px;
-    background: white;
-    border-radius: 30px;
-    box-shadow: 0 10px 20px rgba(0,0,0,0.05);
-    text-align: center;
+/* 2. Navbar Fix - Restores space-between layout from image_ae6793 */
+.navbar {
+  background: white;
+  padding: 1.2rem 5%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 1000;
+  box-sizing: border-box;
 }
 
-.card h1 {
-    font-size: 1.8rem;
-    font-weight: 800;
-    margin-bottom: 0.5rem;
+.nav-links {
+  display: flex;
+  list-style: none; /* Removes bullet points from image_7a9d15 */
+  gap: 2rem;
 }
 
-.dashboard-title {
-    font-size: 0.9rem;
-    margin-bottom: 2rem;
-    color: #64748b;
+.logs, .logout {
+  text-decoration: none;
+  font-weight: 600;
+  color: #F9707E;
+  font-size: 0.95rem;
 }
 
-.input_field {
-    margin: 15px 0;
+/* 3. Container & Card - Restores centering from image_ae01dd */
+.container {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-top: 80px;
 }
 
-.input_field input {
-    height: 50px;
-    width: 100%;
-    padding: 0 15px;
-    font-size: 16px;
-    background-color: #f8f9fa;
-    border: 1px solid #e2e8f0;
-    border-radius: 12px;
-    outline: none;
-    text-align: center;
-    box-sizing: border-box;
+.dashboard-card {
+  background: white;
+  padding: 80px 40px;
+  border-radius: 50px;
+  width: 90%;
+  max-width: 650px;
+  text-align: center;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.04);
 }
 
-.btn {
-    width: 100%;
-    height: 50px;
-    background: #F9707E; /* Signature Pink */
-    border: none;
-    color: #fff;
-    font-size: 16px;
-    font-weight: 700;
-    border-radius: 15px;
-    margin-top: 10px;
-    cursor: pointer;
-    transition: background 0.3s;
+.status-circle {
+  width: 80px;
+  height: 80px;
+  background-color: #ffe2ec;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0 auto 35px;
+  color: #F9707E;
+  font-weight: 700;
+  font-size: 1.8rem;
+  animation: softBlink 2s infinite ease-in-out;
 }
 
-.btn:hover {
-    background: #ff4d6d;
+/* 4. Modal Overlay Fix - Prevents layout chaos from image_7aafdd */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2000;
 }
 
-.error-text {
-    color: #F9707E;
-    font-size: 0.85rem;
-    margin-bottom: 15px;
+.modal-content {
+  background: white;
+  padding: 40px;
+  border-radius: 30px;
+  width: 90%;
+  max-width: 550px;
 }
 
-.login-footer {
-    margin-top: 40px;
-    color: #94a3b8;
-    font-size: 0.85rem;
+/* 5. Footer - Restores position from image_7ba71e */
+.dashboard-footer {
+  text-align: center;
+  padding: 30px 0;
+  color: #94a3b8;
+  font-size: 0.85rem;
+  margin-top: auto;
 }
 </style>
