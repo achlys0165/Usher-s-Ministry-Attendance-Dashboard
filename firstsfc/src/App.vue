@@ -1,11 +1,29 @@
-<script setup></script>
+<script setup>
+import { RouterView } from 'vue-router'
+</script>
 
 <template>
-  <h1>You did it!</h1>
-  <p>
-    Visit <a href="https://vuejs.org/" target="_blank" rel="noopener">vuejs.org</a> to read the
-    documentation
-  </p>
+  <RouterView />
+
+  <footer>
+    <p>&copy; 2024 Usher's Ministry. All rights reserved. </p>
+  </footer>
 </template>
 
-<style scoped></style>
+<style>
+/* Global styles from your main.css */
+@import './assets/main.css';
+
+footer {
+    width: 100%;
+    padding: 40px 0;
+    text-align: center;
+}
+
+footer p {
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.9rem;
+    color: #94a3b8;
+    letter-spacing: 0.5px;
+}
+</style>
