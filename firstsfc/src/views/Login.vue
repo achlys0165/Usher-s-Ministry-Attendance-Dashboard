@@ -4,8 +4,12 @@
       <h1>Admin Login</h1>
       <p class="dashboard-title">Usher’s Ministry – Attendance Dashboard</p>
       
+      <p v-if="errorMessage" style="color: #F9707E; font-size: 0.8rem; margin-bottom: 10px;">
+        {{ errorMessage }}
+      </p>
+
       <div class="input_field">
-        <input type="text" v-model="username" placeholder="Username" required>
+        <input type="email" v-model="email" placeholder="Admin Email" required>
       </div>
       
       <div class="input_field">
@@ -20,14 +24,30 @@
 <script setup>
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
+import { createClient } from '@supabase/supabase-js';
 
 const router = useRouter();
-const username = ref('');
+const email = ref(''); // Changed from username to email for Supabase Auth
 const password = ref('');
+const errorMessage = ref('');
 
-const handleLogin = () => {
-  // Navigation to dashboard
-  router.push('/dashboard');
+// Initialize Supabase (Use your actual project credentials)
+const supabase = createClient('YOUR_SUPABASE_URL', 'YOUR_SUPABASE_ANON_KEY');
+
+const handleLogin = async () => {
+  errorMessage.value = '';
+  
+  const { data, error } = await supabase.auth.signInWithPassword({
+    email: email.value,
+    password: password.value,
+  });
+
+  if (error) {
+    errorMessage.value = "Invalid login credentials.";
+  } else {
+    // Successful login redirects to Dashboard
+    router.push('/dashboard');
+  }
 };
 </script>
 

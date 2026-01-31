@@ -10,11 +10,10 @@
 
     <main class="container">
       <div class="dashboard-card">
-        <div class="status-circle">
-          <span>u</span>
-        </div>
+        <div class="status-circle"><span>u</span></div>
         <h1>READY TO TAP CARD</h1>
-        <p>Please Tap your NFC ID to log attendance</p>
+        <p v-if="lastTap" class="success-msg">Welcome, {{ lastTap }}!</p>
+        <p v-else>Please Tap your NFC ID to log attendance</p>
       </div>
     </main>
 
@@ -25,7 +24,21 @@
           <span class="close-icon" @click="showLogs = false">&times;</span>
         </div>
         <div class="modal-body">
-          <p>No attendance records for today yet.</p>
+          <table v-if="logs.length > 0" class="logs-table">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Time</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="log in logs" :key="log.id">
+                <td>{{ log.full_name }}</td>
+                <td>{{ new Date(log.tap_time).toLocaleTimeString() }}</td>
+              </tr>
+            </tbody>
+          </table>
+          <p v-else>No attendance records for today yet.</p>
         </div>
         <div class="modal-footer">
           <button class="close-btn" @click="showLogs = false">Close</button>
@@ -36,8 +49,46 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
+import { createClient } from '@supabase/supabase-js';
+
+// Replace these with your actual Supabase URL and Anon Key
+const supabase = createClient('YOUR_SUPABASE_URL', 'YOUR_SUPABASE_ANON_KEY');
+
 const showLogs = ref(false);
+const logs = ref([]);
+const lastTap = ref('');
+
+// 1. Fetch existing logs for today
+const fetchLogs = async () => {
+  const today = new Date().toISOString().split('T')[0];
+  const { data, error } = await supabase
+    .from('attendance_logs')
+    .select('*')
+    .gte('tap_time', today)
+    .order('tap_time', { ascending: false });
+
+  if (data) logs.value = data;
+};
+
+// 2. Listen for Real-time taps
+const setupRealtime = () => {
+  supabase
+    .channel('attendance_changes')
+    .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'attendance_logs' }, (payload) => {
+      logs.value.unshift(payload.new); // Add new log to top of list
+      lastTap.value = payload.new.full_name; // Show welcome message
+      
+      // Reset welcome message after 3 seconds
+      setTimeout(() => { lastTap.value = ''; }, 3000);
+    })
+    .subscribe();
+};
+
+onMounted(() => {
+  fetchLogs();
+  setupRealtime();
+});
 </script>
 
 <style scoped>
@@ -193,4 +244,28 @@ const showLogs = ref(false);
     cursor: pointer;
     font-weight: 600;
 }
+
+.logs-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+.logs-table th {
+  text-align: left;
+  color: #64748b;
+  border-bottom: 2px solid #f1f5f9;
+  padding-bottom: 10px;
+}
+.logs-table td {
+  padding: 12px 0;
+  border-bottom: 1px solid #f1f5f9;
+  color: #1e293b;
+  font-weight: 500;
+}
+.success-msg {
+  color: #10b981;
+  font-weight: 700;
+  animation: fadeIn 0.5s ease;
+}
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 </style>
