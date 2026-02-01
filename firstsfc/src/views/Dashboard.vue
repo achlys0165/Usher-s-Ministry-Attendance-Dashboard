@@ -168,8 +168,6 @@ onMounted(() => {
   max-width: 650px;
   text-align: center;
   box-shadow: 0 20px 50px rgba(0,0,0,0.04);
-  margin-top:20px;
-  margin-bottom:10px;
 }
 
 .status-circle {
@@ -276,14 +274,5 @@ onMounted(() => {
 
 .close-btn-styled:hover {
     background: #e2e8f0;
-}
-
-.dashboard-footer {
-  text-align: center;
-  padding: 25px 0;
-  color: #94a3b8;
-  font-size: 0.85rem;
-  margin-top: auto; /* This pushes the footer to the bottom */
-  width: 100%;
 }
 </style>
