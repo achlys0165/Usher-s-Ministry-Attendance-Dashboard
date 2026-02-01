@@ -275,4 +275,13 @@ onMounted(() => {
 .close-btn-styled:hover {
     background: #e2e8f0;
 }
+
+.dashboard-footer {
+  text-align: center;
+  padding: 25px 0;
+  color: #94a3b8;
+  font-size: 0.85rem;
+  margin-top: auto; /* This pushes the footer to the bottom */
+  width: 100%;
+}
 </style>
