@@ -8,13 +8,17 @@
       </ul>
     </nav>
 
-    <main class="container">
+    <main class="main-content">
       <div class="dashboard-card">
         <div class="status-circle"><span>u</span></div>
         <h1>READY TO TAP CARD</h1>
         <p>Please Tap your NFC ID to log attendance</p>
       </div>
     </main>
+
+    <footer class="dashboard-footer">
+      <p>&copy; 2026 Usher's Ministry. All rights reserved.</p>
+    </footer>
 
    <div class="dashboard-wrapper">
       <div v-if="showLogs" class="modal-overlay" @click.self="showLogs = false">
@@ -47,9 +51,7 @@
       </div>
     </div>
 
-    <footer class="dashboard-footer">
-      <p>&copy; 2026 Usher's Ministry. All rights reserved.</p>
-    </footer>
+    
   </div>
 </template>
 
