@@ -1,7 +1,7 @@
 <template>
   <div class="dashboard-wrapper">
     <nav class="navbar">
-      <div class="nav-logo">Usher's Ministry – Attendance Dashboard JACOB TULIG</div>
+      <div class="nav-logo">Usher's Ministry – Attendance Dashboard</div>
       <ul class="nav-links">
         <li><a href="#" @click.prevent="showLogs = true" class="logs">Logs</a></li>
         <li><router-link to="/" class="logout">Logout</router-link></li>
@@ -9,18 +9,12 @@
     </nav>
 
     <main class="container">
-       <div class="dashboard-card">
-            <div class="status-circle"><span>u</span></div>
-            
-            <h1 v-if="lastTappedUser">WELCOME, {{ lastTappedUser }}!</h1>
-            <h1 v-else>READY TO TAP CARD</h1>
-            
-            <p v-if="lastTappedUser">Your attendance has been recorded.</p>
-            <p v-else>Please Tap your NFC ID to log attendance</p>
-        </div>
+      <div class="dashboard-card">
+        <div class="status-circle"><span>u</span></div>
+        <h1>READY TO TAP CARD</h1>
+        <p>Please Tap your NFC ID to log attendance</p>
+      </div>
     </main>
-
-
 
     <div v-if="showLogs" class="modal-overlay" @click.self="showLogs = false">
       <div class="modal-content">
@@ -59,31 +53,26 @@
 
 <script setup>
 import { ref, onMounted } from 'vue';
-import { supabase } from '../supabaseClient'; 
+import { useRouter } from 'vue-router';
+import { createClient } from '@supabase/supabase-js';
 
-const lastTappedUser = ref('');
+const router = useRouter();
+const showLogs = ref(false);
 const logs = ref([]);
 
-const setupRealtime = () => {
-  // Listen for new rows in the attendance_logs table
-  supabase
-    .channel('attendance_changes')
-    .on('postgres_changes', 
-        { event: 'INSERT', schema: 'public', table: 'attendance_logs' }, 
-        (payload) => {
-          // 1. Update the logs list instantly
-          logs.value.unshift(payload.new);
-          
-          // 2. Show a temporary welcome message on the card
-          lastTappedUser.value = payload.new.full_name;
-          setTimeout(() => { lastTappedUser.value = ''; }, 5000);
-        }
-    )
-    .subscribe();
+// Initialize Supabase using your Vercel Environment Variables
+const supabase = createClient(
+  import.meta.env.VITE_SUPABASE_URL,
+  import.meta.env.VITE_SUPABASE_ANON_KEY
+);
+
+const handleLogout = async () => {
+  await supabase.auth.signOut();
+  router.push('/');
 };
 
-onMounted(() => {
-  setupRealtime();
+onMounted(async () => {
+  // Logic to fetch logs from Supabase would go here
 });
 </script>
 
@@ -178,109 +167,23 @@ onMounted(() => {
 
 /* 4. Modal Overlay Fix - Prevents layout chaos from image_7aafdd */
 .modal-overlay {
-    position: fixed; /* Anchors to the screen, not the document */
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background: rgba(0, 0, 0, 0.4); /* Darkened backdrop */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 2000; /* Ensures it stays above the navbar */
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2000;
 }
 
-/* 2. Modal Box Styling */
 .modal-content {
-    background: white;
-    width: 90%;
-    max-width: 550px;
-    padding: 40px;
-    border-radius: 25px; /* Matches the rounded dashboard card */
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-    animation: scaleIn 0.2s ease-out; /* Smooth pop-in effect */
-}
-
-/* 3. Header & Text */
-.modal-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 30px;
-}
-
-.modal-header h2 {
-    font-size: 1.4rem;
-    font-weight: 700;
-    color: #1a202c;
-}
-
-.close-icon {
-    font-size: 24px;
-    cursor: pointer;
-    color: #cbd5e1;
-}
-
-/* 4. Functional Table UI */
-.logs-table {
-    width: 100%;
-    border-collapse: collapse;
-}
-
-.logs-table th {
-    text-align: left;
-    padding: 10px 0;
-    border-bottom: 2px solid #f1f5f9;
-    color: #64748b;
-    font-size: 0.9rem;
-}
-
-.logs-table td {
-    padding: 15px 0;
-    border-bottom: 1px solid #f8fafc;
-    color: #1e293b;
-    font-weight: 500;
-}
-
-/* 5. Footer & Close Button */
-.modal-footer {
-    display: flex;
-    justify-content: flex-end;
-    margin-top: 30px;
-}
-
-.close-btn {
-    padding: 10px 25px;
-    background: #f1f5f9;
-    border: none;
-    border-radius: 12px;
-    font-weight: 600;
-    color: #475569;
-    cursor: pointer;
-    transition: background 0.2s;
-}
-
-.close-btn:hover {
-    background: #e2e8f0;
-}
-
-.empty-msg {
-    text-align: center;
-    padding: 40px 0;
-    color: #94a3b8;
-}
-
-@keyframes scaleIn {
-    from { transform: scale(0.95); opacity: 0; }
-    to { transform: scale(1); opacity: 1; }
-}
-
-/* 5. Footer - Restores position from image_7ba71e */
-.dashboard-footer {
-  text-align: center;
-  padding: 30px 0;
-  color: #94a3b8;
-  font-size: 0.85rem;
-  margin-top: auto;
+  background: white;
+  padding: 40px;
+  border-radius: 30px;
+  width: 90%;
+  max-width: 550px;
 }
 </style>
