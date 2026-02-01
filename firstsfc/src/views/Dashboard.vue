@@ -138,6 +138,14 @@ onMounted(() => {
     padding: 0;
 }
 
+.main-content{
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-top: 100px;
+}
+
 .logs, .logout {
     text-decoration: none;
     font-weight: 600;
@@ -274,5 +282,13 @@ onMounted(() => {
 
 .close-btn-styled:hover {
     background: #e2e8f0;
+}
+
+.dashboard-footer {
+  text-align: center;
+  padding: 25px 0;
+  color: #94a3b8;
+  font-size: 0.85rem;
+  margin-top: auto; /* Correctly pushes to the bottom */
 }
 </style>
