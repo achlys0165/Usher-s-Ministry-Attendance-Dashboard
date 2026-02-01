@@ -46,11 +46,11 @@
         </div>
       </div>
     </div>
-
-    <footer class="dashboard-footer">
-      <p>&copy; 2026 Usher's Ministry. All rights reserved.</p>
-    </footer>
   </div>
+  
+  <footer class="dashboard-footer">
+      <p>&copy; 2026 Usher's Ministry. All rights reserved.</p>
+  </footer>
 </template>
 
 <script setup>
@@ -143,7 +143,7 @@ onMounted(() => {
   display: flex;
   justify-content: center;
   align-items: center;
-  padding-top: 100px;
+  padding-top: 300px;
 }
 
 .logs, .logout {
