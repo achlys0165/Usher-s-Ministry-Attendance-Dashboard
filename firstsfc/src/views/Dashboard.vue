@@ -9,15 +9,11 @@
     </nav>
 
     <main class="container">
-       <div class="dashboard-card">
-            <div class="status-circle"><span>u</span></div>
-            
-            <h1 v-if="lastTappedUser">WELCOME, {{ lastTappedUser }}!</h1>
-            <h1 v-else>READY TO TAP CARD</h1>
-            
-            <p v-if="lastTappedUser">Your attendance has been recorded.</p>
-            <p v-else>Please Tap your NFC ID to log attendance</p>
-        </div>
+      <div class="dashboard-card">
+        <div class="status-circle"><span>u</span></div>
+        <h1>READY TO TAP CARD</h1>
+        <p>Please Tap your NFC ID to log attendance</p>
+      </div>
     </main>
 
     <div v-if="showLogs" class="modal-overlay" @click.self="showLogs = false">
@@ -27,21 +23,7 @@
           <span class="close-icon" @click="showLogs = false">&times;</span>
         </div>
         <div class="modal-body">
-          <table v-if="logs.length > 0" class="logs-table">
-            <thead>
-              <tr>
-                <th>Name</th>
-                <th>Time</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="log in logs" :key="log.id">
-                <td>{{ log.full_name }}</td>
-                <td>{{ new Date(log.tap_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) }}</td>
-              </tr>
-            </tbody>
-          </table>
-          <p v-else class="empty-msg">No attendance records for today yet.</p>
+          <p class="empty-msg">No attendance records for today yet.</p>
         </div>
         <div class="modal-footer">
           <button class="close-btn" @click="showLogs = false">Close</button>
@@ -176,7 +158,7 @@ onMounted(async () => {
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.4);
+  background: rgba(0, 0, 0, 0.4); /* Darkened background */
   display: flex;
   justify-content: center;
   align-items: center;
