@@ -167,24 +167,101 @@ onMounted(async () => {
 
 /* 4. Modal Overlay Fix - Prevents layout chaos from image_7aafdd */
 .modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.4);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 2000;
+    position: fixed; /* Anchors to the screen, not the document */
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.4); /* Darkened backdrop */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000; /* Ensures it stays above the navbar */
 }
 
+/* 2. Modal Box Styling */
 .modal-content {
-  background: white;
-  padding: 40px;
-  border-radius: 30px;
-  width: 90%;
-  max-width: 550px;
+    background: white;
+    width: 90%;
+    max-width: 550px;
+    padding: 40px;
+    border-radius: 25px; /* Matches the rounded dashboard card */
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    animation: scaleIn 0.2s ease-out; /* Smooth pop-in effect */
+}
+
+/* 3. Header & Text */
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.modal-header h2 {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: #1a202c;
+}
+
+.close-icon {
+    font-size: 24px;
+    cursor: pointer;
+    color: #cbd5e1;
+}
+
+/* 4. Functional Table UI */
+.logs-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.logs-table th {
+    text-align: left;
+    padding: 10px 0;
+    border-bottom: 2px solid #f1f5f9;
+    color: #64748b;
+    font-size: 0.9rem;
+}
+
+.logs-table td {
+    padding: 15px 0;
+    border-bottom: 1px solid #f8fafc;
+    color: #1e293b;
+    font-weight: 500;
+}
+
+/* 5. Footer & Close Button */
+.modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 30px;
+}
+
+.close-btn {
+    padding: 10px 25px;
+    background: #f1f5f9;
+    border: none;
+    border-radius: 12px;
+    font-weight: 600;
+    color: #475569;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.close-btn:hover {
+    background: #e2e8f0;
+}
+
+.empty-msg {
+    text-align: center;
+    padding: 40px 0;
+    color: #94a3b8;
+}
+
+@keyframes scaleIn {
+    from { transform: scale(0.95); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
 }
 
 /* 5. Footer - Restores position from image_7ba71e */
