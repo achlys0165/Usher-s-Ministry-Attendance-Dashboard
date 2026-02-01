@@ -16,10 +16,6 @@
       </div>
     </main>
 
-    <footer class="dashboard-footer">
-      <p>&copy; 2026 Usher's Ministry. All rights reserved.</p>
-    </footer>
-
    <div class="dashboard-wrapper">
       <div v-if="showLogs" class="modal-overlay" @click.self="showLogs = false">
         <div class="modal-content">
@@ -51,7 +47,9 @@
       </div>
     </div>
 
-    
+    <footer class="dashboard-footer">
+      <p>&copy; 2026 Usher's Ministry. All rights reserved.</p>
+    </footer>
   </div>
 </template>
 
