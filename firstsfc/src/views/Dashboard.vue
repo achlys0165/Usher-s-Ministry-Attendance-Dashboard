@@ -16,17 +16,33 @@
       </div>
     </main>
 
-    <div v-if="showLogs" class="modal-overlay" @click.self="showLogs = false">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h2>Today's Attendance Logs</h2>
-          <span class="close-icon" @click="showLogs = false">&times;</span>
-        </div>
-        <div class="modal-body">
-          <p class="empty-msg">No attendance records for today yet.</p>
-        </div>
-        <div class="modal-footer">
-          <button class="close-btn" @click="showLogs = false">Close</button>
+   <div class="dashboard-wrapper">
+      <div v-if="showLogs" class="modal-overlay" @click.self="showLogs = false">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h2 class="modal-title">Today's Attendance Logs</h2>
+            <span class="close-icon" @click="showLogs = false">&times;</span>
+          </div>
+
+          <div class="modal-body">
+            <div v-if="logs.length === 0" class="empty-state">
+              <p>No attendance records for today yet.</p>
+          </div>
+
+          <div v-else class="logs-container">
+            <div v-for="log in logs" :key="log.id" class="log-card">
+              <div class="log-info">
+                <p class="user-name">{{ log.full_name }}</p>
+                <p class="user-id">{{ log.nfc_id }}</p>
+              </div>
+                <p class="log-time">{{ formatTime(log.tap_time) }}</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="modal-footer">
+            <button class="close-btn-styled" @click="showLogs = false">Close</button>
+          </div>
         </div>
       </div>
     </div>
@@ -42,15 +58,25 @@ import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { createClient } from '@supabase/supabase-js';
 
-const router = useRouter();
+import { ref } from 'vue';
+
 const showLogs = ref(false);
-const logs = ref([]);
+const logs = ref([]); // Data from Supabase
+
+const formatTime = (timestamp) => {
+  return new Date(timestamp).toLocaleTimeString([], { 
+    hour: '2-digit', 
+    minute: '2-digit', 
+    second: '2-digit' 
+  });
+};
 
 // Initialize Supabase using your Vercel Environment Variables
 const supabase = createClient(
   import.meta.env.VITE_SUPABASE_URL,
   import.meta.env.VITE_SUPABASE_ANON_KEY
 );
+
 
 const handleLogout = async () => {
   await supabase.auth.signOut();
@@ -151,25 +177,94 @@ onMounted(async () => {
   animation: softBlink 2s infinite ease-in-out;
 }
 
-/* 4. Modal Overlay Fix - Prevents layout chaos from image_7aafdd */
+/* Modal Overlay */
 .modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.4); /* Darkened background */
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 2000;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.35);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
 }
 
+/* Modal Box */
 .modal-content {
-  background: white;
-  padding: 40px;
-  border-radius: 30px;
-  width: 90%;
-  max-width: 550px;
+    background: white;
+    width: 90%;
+    max-width: 550px;
+    padding: 30px;
+    border-radius: 25px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+}
+
+/* Header: Title Top-Left */
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+}
+
+.modal-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #1e293b;
+}
+
+.close-icon {
+    font-size: 24px;
+    color: #94a3b8;
+    cursor: pointer;
+}
+
+/* Empty State Message */
+.empty-state {
+    text-align: center;
+    padding: 60px 0;
+    color: #94a3b8;
+    font-size: 1rem;
+}
+
+/* Log Card Styling */
+.log-card {
+    background: #fff5f7; /* Soft pink tint for logs */
+    padding: 15px 20px;
+    border-radius: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.user-name { font-weight: 700; color: #1e293b; margin-bottom: 2px; }
+.user-id { font-size: 0.8rem; color: #94a3b8; }
+.log-time { font-weight: 600; color: #F9707E; font-size: 0.9rem; }
+
+/* Footer: Button Lower-Right */
+.modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 20px;
+}
+
+.close-btn-styled {
+    background: #f1f5f9; /* Soft background */
+    border: none;
+    padding: 10px 25px;
+    border-radius: 12px;
+    font-weight: 600;
+    color: #475569;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.close-btn-styled:hover {
+    background: #e2e8f0;
 }
 </style>
