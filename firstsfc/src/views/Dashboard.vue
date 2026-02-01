@@ -54,14 +54,19 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted } from 'vue'; // All Vue imports on one line
 import { useRouter } from 'vue-router';
 import { createClient } from '@supabase/supabase-js';
 
-import { ref } from 'vue';
-
+const router = useRouter();
 const showLogs = ref(false);
 const logs = ref([]); // Data from Supabase
+
+// Use your Vercel Environment Variables
+const supabase = createClient(
+  import.meta.env.VITE_SUPABASE_URL,
+  import.meta.env.VITE_SUPABASE_ANON_KEY
+);
 
 const formatTime = (timestamp) => {
   return new Date(timestamp).toLocaleTimeString([], { 
@@ -71,20 +76,23 @@ const formatTime = (timestamp) => {
   });
 };
 
-// Initialize Supabase using your Vercel Environment Variables
-const supabase = createClient(
-  import.meta.env.VITE_SUPABASE_URL,
-  import.meta.env.VITE_SUPABASE_ANON_KEY
-);
-
-
 const handleLogout = async () => {
   await supabase.auth.signOut();
   router.push('/');
 };
 
-onMounted(async () => {
-  // Logic to fetch logs from Supabase would go here
+// Fetch real data from Supabase
+const fetchLogs = async () => {
+  const { data, error } = await supabase
+    .from('attendance_logs')
+    .select('*')
+    .order('tap_time', { ascending: false });
+
+  if (data) logs.value = data;
+};
+
+onMounted(() => {
+  fetchLogs();
 });
 </script>
 
