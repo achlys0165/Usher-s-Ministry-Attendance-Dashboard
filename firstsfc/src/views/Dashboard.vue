@@ -16,36 +16,36 @@
       </div>
     </main>
 
-   <div class="dashboard-wrapper">
-      <div v-if="showLogs" class="modal-overlay" @click.self="showLogs = false">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h2 class="modal-title">Today's Attendance Logs</h2>
-            <span class="close-icon" @click="showLogs = false">&times;</span>
-          </div>
+   
+    <div v-if="showLogs" class="modal-overlay" @click.self="showLogs = false">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2 class="modal-title">Today's Attendance Logs</h2>
+          <span class="close-icon" @click="showLogs = false">&times;</span>
+        </div>
 
-          <div class="modal-body">
-            <div v-if="logs.length === 0" class="empty-state">
-              <p>No attendance records for today yet.</p>
-          </div>
+        <div class="modal-body">
+          <div v-if="logs.length === 0" class="empty-state">
+            <p>No attendance records for today yet.</p>
+        </div>
 
-          <div v-else class="logs-container">
-            <div v-for="log in logs" :key="log.id" class="log-card">
-              <div class="log-info">
-                <p class="user-name">{{ log.full_name }}</p>
-                <p class="user-id">{{ log.nfc_id }}</p>
-              </div>
-                <p class="log-time">{{ formatTime(log.tap_time) }}</p>
-              </div>
+        <div v-else class="logs-container">
+          <div v-for="log in logs" :key="log.id" class="log-card">
+            <div class="log-info">
+              <p class="user-name">{{ log.full_name }}</p>
+              <p class="user-id">{{ log.nfc_id }}</p>
+            </div>
+              <p class="log-time">{{ formatTime(log.tap_time) }}</p>
             </div>
           </div>
+        </div>
 
-          <div class="modal-footer">
-            <button class="close-btn-styled" @click="showLogs = false">Close</button>
-          </div>
+        <div class="modal-footer">
+          <button class="close-btn-styled" @click="showLogs = false">Close</button>
         </div>
       </div>
     </div>
+    
   </div>
   
   <footer class="dashboard-footer">
@@ -138,12 +138,13 @@ onMounted(() => {
     padding: 0;
 }
 
-.main-content{
+.main-content {
   flex: 1;
   display: flex;
   justify-content: center;
   align-items: center;
-  padding-top: 300px;
+  margin-top: 90px; /* navbar offset */
+  padding-top: 0;
 }
 
 .logs, .logout {
