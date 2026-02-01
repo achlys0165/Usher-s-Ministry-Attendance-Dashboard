@@ -1,7 +1,7 @@
 <template>
   <div class="dashboard-wrapper">
     <nav class="navbar">
-      <div class="nav-logo">Usher's Ministry – Attendance Dashboard</div>
+      <div class="nav-logo">Usher's Ministry – Attendance Dashboard JACOB TULIG</div>
       <ul class="nav-links">
         <li><a href="#" @click.prevent="showLogs = true" class="logs">Logs</a></li>
         <li><router-link to="/" class="logout">Logout</router-link></li>
@@ -9,12 +9,18 @@
     </nav>
 
     <main class="container">
-      <div class="dashboard-card">
-        <div class="status-circle"><span>u</span></div>
-        <h1>READY TO TAP CARD</h1>
-        <p>Please Tap your NFC ID to log attendance</p>
-      </div>
+       <div class="dashboard-card">
+            <div class="status-circle"><span>u</span></div>
+            
+            <h1 v-if="lastTappedUser">WELCOME, {{ lastTappedUser }}!</h1>
+            <h1 v-else>READY TO TAP CARD</h1>
+            
+            <p v-if="lastTappedUser">Your attendance has been recorded.</p>
+            <p v-else>Please Tap your NFC ID to log attendance</p>
+        </div>
     </main>
+
+
 
     <div v-if="showLogs" class="modal-overlay" @click.self="showLogs = false">
       <div class="modal-content">
@@ -53,26 +59,31 @@
 
 <script setup>
 import { ref, onMounted } from 'vue';
-import { useRouter } from 'vue-router';
-import { createClient } from '@supabase/supabase-js';
+import { supabase } from '../supabaseClient'; 
 
-const router = useRouter();
-const showLogs = ref(false);
+const lastTappedUser = ref('');
 const logs = ref([]);
 
-// Initialize Supabase using your Vercel Environment Variables
-const supabase = createClient(
-  import.meta.env.VITE_SUPABASE_URL,
-  import.meta.env.VITE_SUPABASE_ANON_KEY
-);
-
-const handleLogout = async () => {
-  await supabase.auth.signOut();
-  router.push('/');
+const setupRealtime = () => {
+  // Listen for new rows in the attendance_logs table
+  supabase
+    .channel('attendance_changes')
+    .on('postgres_changes', 
+        { event: 'INSERT', schema: 'public', table: 'attendance_logs' }, 
+        (payload) => {
+          // 1. Update the logs list instantly
+          logs.value.unshift(payload.new);
+          
+          // 2. Show a temporary welcome message on the card
+          lastTappedUser.value = payload.new.full_name;
+          setTimeout(() => { lastTappedUser.value = ''; }, 5000);
+        }
+    )
+    .subscribe();
 };
 
-onMounted(async () => {
-  // Logic to fetch logs from Supabase would go here
+onMounted(() => {
+  setupRealtime();
 });
 </script>
 
