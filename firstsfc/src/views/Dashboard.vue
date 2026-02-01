@@ -9,11 +9,15 @@
     </nav>
 
     <main class="container">
-      <div class="dashboard-card">
-        <div class="status-circle"><span>u</span></div>
-        <h1>READY TO TAP CARD</h1>
-        <p>Please Tap your NFC ID to log attendance</p>
-      </div>
+       <div class="dashboard-card">
+            <div class="status-circle"><span>u</span></div>
+            
+            <h1 v-if="lastTappedUser">WELCOME, {{ lastTappedUser }}!</h1>
+            <h1 v-else>READY TO TAP CARD</h1>
+            
+            <p v-if="lastTappedUser">Your attendance has been recorded.</p>
+            <p v-else>Please Tap your NFC ID to log attendance</p>
+        </div>
     </main>
 
     <div v-if="showLogs" class="modal-overlay" @click.self="showLogs = false">
