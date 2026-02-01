@@ -170,6 +170,8 @@ onMounted(() => {
   max-width: 650px;
   text-align: center;
   box-shadow: 0 20px 50px rgba(0,0,0,0.04);
+  margin-top:20px;
+  margin-bottom:10px;
 }
 
 .status-circle {
