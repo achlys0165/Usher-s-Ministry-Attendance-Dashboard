@@ -173,8 +173,12 @@ onMounted(() => {
   border-radius: 50px;
   width: 90%;
   max-width: 650px;
-  text-align: flex;
+  text-align: center;
   box-shadow: 0 20px 50px rgba(0,0,0,0.04);
+}
+
+.dashboard-card h1, p{
+  justify-content:space-between;
 }
 
 .status-circle {
