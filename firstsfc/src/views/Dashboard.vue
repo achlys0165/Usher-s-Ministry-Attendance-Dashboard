@@ -170,6 +170,7 @@ onMounted(() => {
 
 .dashboard-card h1, p{
   white-space:nowrap;
+  text-align: center;
 }
 
 .status-circle {
