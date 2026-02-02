@@ -169,7 +169,7 @@ onMounted(() => {
 
 .dashboard-card {
   background: white;
-  padding: 80px 120px;
+  padding: 80px 150px;
   border-radius: 50px;
   width: 90%;
   max-width: 650px;
@@ -288,6 +288,5 @@ onMounted(() => {
   padding: 25px 0;
   color: #94a3b8;
   font-size: 0.85rem;
-  margin-top: auto; /* Correctly pushes to the bottom */
 }
 </style>
