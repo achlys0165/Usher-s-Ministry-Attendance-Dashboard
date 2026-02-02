@@ -82,11 +82,11 @@ const handleLogin = async () => {
 }
 
 .logo{
-  display: flex;
+  display: center;
   justify-content:center;
   text-align:center;
-  height:100px;
-  width:100px;
+  height:150px;
+  width:150px;
 }
 
 .dashboard-title {
