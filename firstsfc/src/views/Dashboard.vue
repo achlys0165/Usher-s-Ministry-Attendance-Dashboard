@@ -163,7 +163,7 @@ onMounted(() => {
   display: flex;
   justify-content: center;
   align-items: center;
-  padding-top: 80px;
+  padding-top: 50px;
 }
 
 .dashboard-card {
