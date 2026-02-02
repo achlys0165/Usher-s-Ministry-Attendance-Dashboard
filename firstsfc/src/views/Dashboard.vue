@@ -158,7 +158,6 @@ onMounted(() => {
     opacity: 0.7;
 }
 
-/* 3. Container & Card - Restores centering from image_ae01dd */
 .container {
   flex: 1;
   display: flex;
@@ -204,6 +203,7 @@ onMounted(() => {
     width: 100vw;
     height: 100vh;
     background: rgba(0, 0, 0, 0.35);
+    backdrop-filter:blur(10px);
     display: flex;
     justify-content: center;
     align-items: center;

@@ -17,7 +17,7 @@ body {
     flex-direction: column;
 }
 
-/* Shared Blink Animation [cite: 29, 30] */
+/* Shared Blink Animation */
 @keyframes softBlink {
   0% { opacity: 1; }
   50% { opacity: 0.3; }
