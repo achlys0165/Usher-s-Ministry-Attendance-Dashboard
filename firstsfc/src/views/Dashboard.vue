@@ -105,8 +105,6 @@ onMounted(() => {
   background-color: #ffe2ec;
 }
 
-/* 2. Navbar Fix - Restores space-between layout from image_ae6793 */
-/* 1. Reset and Positioning */
 .navbar {
     background: white;
     padding: 1.2rem 5%;
@@ -171,7 +169,7 @@ onMounted(() => {
 
 .dashboard-card {
   background: white;
-  padding: 80px 40px;
+  padding: 80px 80px;
   border-radius: 50px;
   width: 90%;
   max-width: 650px;
