@@ -2,6 +2,7 @@
   <div class="login-container">
     <div class="card">
       <form @submit.prevent="handleLogin">
+        <img src="/logo.png" class="logo">
         <h1>Admin Login</h1>
         <p class="dashboard-title">Usher’s Ministry – Attendance Dashboard</p>
         
@@ -78,6 +79,13 @@ const handleLogin = async () => {
     font-size: 1.8rem;
     font-weight: 800;
     margin-bottom: 0.5rem;
+}
+
+.logo{
+  border-radius:50%;
+  display: flex;
+  justify-content:center;
+  text-align:center;
 }
 
 .dashboard-title {

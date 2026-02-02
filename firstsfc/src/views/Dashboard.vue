@@ -169,7 +169,7 @@ onMounted(() => {
 
 .dashboard-card {
   background: white;
-  padding: 80px 80px;
+  padding: 80px 120px;
   border-radius: 50px;
   width: 90%;
   max-width: 650px;
