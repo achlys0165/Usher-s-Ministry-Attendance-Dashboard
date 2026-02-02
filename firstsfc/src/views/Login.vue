@@ -85,8 +85,8 @@ const handleLogin = async () => {
   display: center;
   justify-content:center;
   text-align:center;
-  height:150px;
-  width:150px;
+  height:180px;
+  width:180px;
 }
 
 .dashboard-title {
