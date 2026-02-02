@@ -158,14 +158,6 @@ onMounted(() => {
     opacity: 0.7;
 }
 
-.container {
-  flex: 1;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding-top: 50px;
-}
-
 .dashboard-card {
   background: white;
   padding: 80px 150px;
