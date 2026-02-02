@@ -169,7 +169,7 @@ onMounted(() => {
 }
 
 .dashboard-card h1, p{
-  text-align:space-between;
+  white-space:nowrap;
 }
 
 .status-circle {
