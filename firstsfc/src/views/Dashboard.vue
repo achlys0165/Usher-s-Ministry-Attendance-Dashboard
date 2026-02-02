@@ -103,6 +103,7 @@ onMounted(() => {
   flex-direction: column;
   min-height: 100vh;
   background-color: #ffe2ec;
+  grid-template-rows: auto 1fr auto;
 }
 
 .navbar {
