@@ -10,6 +10,7 @@
 
 body {
     min-height: 100vh;
+    margin:0;
     background: #ffe2ec;
     display: flex;
     justify-content: center;
@@ -178,7 +179,7 @@ body {
 
 .dashboard-card h1, p{
   white-space:nowrap;
-  text-align: flex;
+  text-align: center;
 }
 
 .status-circle {
