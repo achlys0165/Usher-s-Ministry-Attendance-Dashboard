@@ -54,6 +54,7 @@
 </template>
 
 <script setup>
+import Scanner from './Scanner.vue';
 import { ref, onMounted } from 'vue'; // All Vue imports on one line
 import { useRouter } from 'vue-router';
 import { createClient } from '@supabase/supabase-js';
