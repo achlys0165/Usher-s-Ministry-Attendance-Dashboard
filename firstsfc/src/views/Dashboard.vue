@@ -1,6 +1,5 @@
 <template>
   <div class="dashboard-wrapper">
-    <Scanner />
     <nav class="navbar">
       <div class="nav-logo">Usher's Ministry – Attendance Dashboard</div>
       <ul class="nav-links">
@@ -9,8 +8,10 @@
       </ul>
     </nav>
 
+
     <main class="main-content">
       <div class="dashboard-card">
+         <Scanner />
         <div class="status-circle"><span>u</span></div>
         <h1>WELCOME!</h1>
         <p>Please Tap your NFC ID to log attendance</p>
