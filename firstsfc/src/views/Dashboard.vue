@@ -1,5 +1,6 @@
 <template>
   <div class="dashboard-wrapper">
+    <Scanner />
     <nav class="navbar">
       <div class="nav-logo">Usher's Ministry – Attendance Dashboard</div>
       <ul class="nav-links">
