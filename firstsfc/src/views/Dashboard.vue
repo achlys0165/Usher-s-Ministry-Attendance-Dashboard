@@ -11,7 +11,7 @@
 
     <main class="main-content">
       <div class="dashboard-card">
-        <div class="status-circle"><span>Tap here</span></div>
+        <div class="status-circle"><span>u</span></div>
         <h1>WELCOME!</h1>
         <p>Please Tap your NFC ID to log attendance</p>
       </div>
