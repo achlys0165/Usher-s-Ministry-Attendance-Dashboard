@@ -29,7 +29,7 @@
         </div>
 
         <h1>{{ message }}</h1>
-        <p v-if="subMessage">{{ subMessage }}</p>
+        <p v-if="Hello">{{ subMessage }}</p>
 
         <button
           v-if="status === 'unknown'"
