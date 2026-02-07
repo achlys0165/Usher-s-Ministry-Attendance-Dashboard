@@ -10,13 +10,38 @@
 
 
     <main class="main-content">
-      <div class="dashboard-card">
-         <Scanner />
-        <div class="status-circle"><span>u</span></div>
-        <h1>WELCOME!</h1>
-        <p>Please Tap your NFC ID to log attendance</p>
+
+      <!-- Hidden scanner input -->
+      <form @submit.prevent="handleScan" style="opacity:0; position:absolute;">
+        <input
+          ref="scanInput"
+          v-model="scannedValue"
+          autofocus
+        />
+      </form>
+
+      <div class="dashboard-card" :class="status">
+        <div class="status-circle">
+          <span v-if="status === 'idle'">⌛</span>
+          <span v-if="status === 'success'">✅</span>
+          <span v-if="status === 'invalid'">❌</span>
+          <span v-if="status === 'unknown'">⚠️</span>
+        </div>
+
+        <h1>{{ message }}</h1>
+        <p v-if="subMessage">{{ subMessage }}</p>
+
+        <button
+          v-if="status === 'unknown'"
+          @click="registerCard"
+          class="register-btn"
+        >
+          Register this card
+        </button>
       </div>
+
     </main>
+
 
    
     <div v-if="showLogs" class="modal-overlay" @click.self="showLogs = false">
