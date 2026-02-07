@@ -96,6 +96,17 @@ const supabase = createClient(
   import.meta.env.VITE_SUPABASE_ANON_KEY
 );
 
+// --- State Variables ---
+const showLogs = ref(false);
+const logs = ref([]);
+const scanInput = ref(null);
+const scannedValue = ref('');
+
+// UI State - This fixes your "No message" issue
+const status = ref('idle');
+const message = ref('Ready to Scan');
+const subMessage = ref('Please tap your NFC card');
+
 const formatTime = (timestamp) => {
   return new Date(timestamp).toLocaleTimeString([], { 
     hour: '2-digit', 
