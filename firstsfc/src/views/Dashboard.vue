@@ -691,16 +691,4 @@ onUnmounted(() => {
   animation: slideIn 0.3s ease;
 }
 
-.register{
-  text-decoration: none;
-  font-weight: 600;
-  color: #F9707E;
-  font-size: 0.95rem;
-  cursor: pointer;
-  transition: opacity 0.3s ease;
-}
-
-.register-link:hover {
-  opacity: 0.7;
-}
 </style>

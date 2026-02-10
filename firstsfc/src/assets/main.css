@@ -150,7 +150,7 @@ body {
   padding-top: 0;
 }
 
-.logs, .logout {
+.logs, .logout, .register {
     text-decoration: none;
     font-weight: 600;
     color: #F9707E;
@@ -159,7 +159,7 @@ body {
     transition: opacity 0.3s ease;
 }
 
-.logs:hover, .logout:hover {
+.logs:hover, .logout:hover, .register:hover {
     opacity: 0.7;
 }
 
