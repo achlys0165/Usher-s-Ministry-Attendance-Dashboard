@@ -9,7 +9,7 @@
         <p v-if="errorMessage" class="error-text">{{ errorMessage }}</p>
 
         <div class="input_field">
-          <input type="email" v-model="email" placeholder="Username" required>
+          <input type="email" v-model="email" placeholder="Email" required>
         </div>
         
         <div class="input_field">
