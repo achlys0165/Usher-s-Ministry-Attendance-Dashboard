@@ -3,7 +3,7 @@
     <nav class="navbar">
       <div class="nav-logo">Usher's Ministry – Attendance Dashboard</div>
       <ul class="nav-links">
-        <li><router-link to="/register" class="register-link">+ New Usher</router-link></li>
+        <li><router-link to="/register" class="register">+ New Usher</router-link></li>
         <li><a href="#" @click.prevent="openLogs" class="logs">Logs</a></li>
         <li><a href="#" @click.prevent="handleLogout" class="logout">Logout</a></li>
       </ul>
@@ -691,11 +691,13 @@ onUnmounted(() => {
   animation: slideIn 0.3s ease;
 }
 
-.register-link {
+.register{
   text-decoration: none;
   font-weight: 600;
   color: #F9707E;
   font-size: 0.95rem;
+  cursor: pointer;
+  transition: opacity 0.3s ease;
 }
 
 .register-link:hover {
