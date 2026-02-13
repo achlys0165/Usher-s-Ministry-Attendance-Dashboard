@@ -508,6 +508,12 @@ onUnmounted(() => {
   margin-bottom: 1.5rem;
 }
 
+.main-message, .sub-message {
+  text-align: center;       /* Ensure text is centered */
+  max-width: 100%;          /* Prevent overflow */
+  word-wrap: break-word;    /* Wrap long names */
+}
+
 .register-btn {
   background: #F9707E;
   color: white;
