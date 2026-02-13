@@ -90,6 +90,11 @@
             <h2>{{ scanMessage }}</h2>
             <p class="scan-submessage">{{ scanSubMessage }}</p>
 
+            <!-- Debug info (remove in production) -->
+            <div v-if="debugInfo" class="debug-info">
+              <small>{{ debugInfo }}</small>
+            </div>
+
             <form @submit.prevent="handleCardScan" style="opacity:0; position:absolute;">
               <input
                 ref="cardInput"
@@ -189,6 +194,7 @@ const registeredCardId = ref('');
 const isSubmitting = ref(false);
 const errorMessage = ref('');
 const nameInput = ref(null);
+const debugInfo = ref(''); // For debugging
 
 const refocusCardInput = () => {
   setTimeout(() => {
@@ -205,6 +211,7 @@ const goToStep2 = () => {
   scanMessage.value = 'Ready to Scan';
   scanSubMessage.value = 'Please tap the NFC card on the reader';
   scannedCardId.value = '';
+  debugInfo.value = '';
   
   nextTick(() => {
     refocusCardInput();
@@ -216,44 +223,58 @@ const goBack = () => {
   scanStatus.value = 'waiting';
   scannedCardId.value = '';
   errorMessage.value = '';
+  debugInfo.value = '';
 };
 
+// Handle NFC card scan
 const handleCardScan = async () => {
   if (!scannedCardId.value.trim()) return;
 
   const cardId = scannedCardId.value.trim();
   scannedCardId.value = '';
   
+  console.log('Scanned card ID:', cardId); // Debug log
+  debugInfo.value = `Scanned: ${cardId.substring(0, 10)}...`;
+  
   try {
+    // Use regular select instead of maybeSingle
     const { data: existingUser, error: checkError } = await supabase
-      .from('users')
-      .select('id, full_name')
-      .eq('nfc_id', cardId)
-      .maybeSingle();
+      .from('authorized_users')
+      .select('*')
+      .eq('nfc_id', cardId);
+
+    console.log('Query result:', { existingUser, checkError }); // Debug log
 
     if (checkError) {
+      console.error('Supabase error:', checkError);
       scanStatus.value = 'error';
-      scanMessage.value = 'Error Checking Card';
-      scanSubMessage.value = 'Please try again';
+      scanMessage.value = 'Database Error';
+      scanSubMessage.value = checkError.message || 'Please check console';
+      debugInfo.value = `Error: ${checkError.message}`;
       return;
     }
 
-    if (existingUser) {
+    // Check if any user found (existingUser is now an array)
+    if (existingUser && existingUser.length > 0) {
       scanStatus.value = 'error';
       scanMessage.value = 'Card Already Registered';
-      scanSubMessage.value = `This card belongs to ${existingUser.full_name}`;
+      scanSubMessage.value = `This card belongs to ${existingUser[0].full_name}`;
       return;
     }
 
+    // Card is available
     registeredCardId.value = cardId;
     scanStatus.value = 'success';
     scanMessage.value = 'Card Ready!';
     scanSubMessage.value = 'Click "Complete Registration" to finish';
+    debugInfo.value = '';
 
   } catch (error) {
+    console.error('Catch error:', error);
     scanStatus.value = 'error';
     scanMessage.value = 'Error Processing Card';
-    scanSubMessage.value = 'Please try again';
+    scanSubMessage.value = error.message || 'Please try again';
+    debugInfo.value = `Catch: ${error.message}`;
   }
 };
 
@@ -265,34 +286,44 @@ const submitRegistration = async () => {
 
   try {
     const { data: newUser, error: insertError } = await supabase
-      .from('users')
+      .from('authorized_users')
       .insert({
         nfc_id: registeredCardId.value,
         full_name: form.value.full_name.trim(),
         email: form.value.email.trim() || null,
         phone: form.value.phone.trim() || null,
-        department: 'Ushering',
         role: form.value.role,
         notes: form.value.notes.trim() || null,
         created_at: new Date().toISOString()
       })
-      .select()
-      .single();
+      .select();
 
     if (insertError) {
+      console.error('Insert error:', insertError);
       if (insertError.code === '23505') {
         errorMessage.value = 'This card is already registered.';
       } else {
-        errorMessage.value = 'Failed to register. Please try again.';
+        errorMessage.value = `Failed to register: ${insertError.message}`;
       }
       isSubmitting.value = false;
       return;
     }
 
+    // Also log to attendance_logs
+    await supabase
+      .from('attendance_logs')
+      .insert({
+        full_name: form.value.full_name.trim(),
+        tap_time: new Date().toISOString(),
+        status: 'registered',
+        nfc_id: registeredCardId.value
+      });
+
     step.value = 3;
 
   } catch (error) {
-    errorMessage.value = 'An unexpected error occurred.';
+    console.error('Submit error:', error);
+    errorMessage.value = `An unexpected error occurred: ${error.message}`;
   } finally {
     isSubmitting.value = false;
   }
@@ -312,6 +343,7 @@ const registerAnother = () => {
   scanMessage.value = 'Ready to Scan';
   scanSubMessage.value = 'Please tap the NFC card on the reader';
   errorMessage.value = '';
+  debugInfo.value = '';
   step.value = 1;
   
   nextTick(() => {
@@ -541,6 +573,16 @@ onMounted(() => {
 .scan-submessage {
   color: #64748b;
   font-size: 0.95rem;
+}
+
+.debug-info {
+  margin-top: 10px;
+  padding: 8px;
+  background: #f1f5f9;
+  border-radius: 6px;
+  color: #64748b;
+  font-family: monospace;
+  font-size: 0.8rem;
 }
 
 .preview-box {
