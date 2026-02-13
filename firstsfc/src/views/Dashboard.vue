@@ -631,20 +631,18 @@ onUnmounted(() => {
 
 /* Export Button */
 .export-btn {
-  background: #10b981;
-  color: white;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 12px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s;
-  margin-right: 10px;
+    background: #f1f5f9; 
+    border: none;
+    padding: 10px 25px;
+    border-radius: 12px;
+    font-weight: 600;
+    color: #475569;
+    cursor: pointer;
+    transition: background 0.2s;
 }
 
-.export-btn:hover {
-  background: #059669;
-  transform: translateY(-1px);
+.export-btn:hover  {
+    background: #e2e8f0;
 }
 
 .modal-footer {
