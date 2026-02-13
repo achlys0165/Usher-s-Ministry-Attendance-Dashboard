@@ -15,10 +15,10 @@
             <span>📝</span>
           </div>
           <h1>Register New Usher</h1>
-          <p class="subtitle">Enter usher details and tap NFC card to register</p>
+          <p class="subtitle">Enter usher name and tap NFC card to register</p>
         </div>
 
-        <!-- Step 1: Enter Details -->
+        <!-- Step 1: Enter Name -->
         <div v-if="step === 1" class="form-section">
           <form @submit.prevent="goToStep2" class="register-form">
             <div class="input-group">
@@ -32,47 +32,7 @@
               />
             </div>
 
-            <div class="input-row">
-              <div class="input-group">
-                <label>Email</label>
-                <input 
-                  v-model="form.email" 
-                  type="email" 
-                  placeholder="email@example.com"
-                />
-              </div>
-
-              <div class="input-group">
-                <label>Phone Number</label>
-                <input 
-                  v-model="form.phone" 
-                  type="tel" 
-                  placeholder="+1 234 567 890"
-                />
-              </div>
-            </div>
-
-            <div class="input-group">
-              <label>Role <span class="required">*</span></label>
-              <select v-model="form.role" required>
-                <option value="">Select Role</option>
-                <option value="Usher">Usher</option>
-                <option value="Senior Usher">Senior Usher</option>
-                <option value="Head Usher">Head Usher</option>
-                <option value="Coordinator">Coordinator</option>
-              </select>
-            </div>
-
-            <div class="input-group">
-              <label>Notes (Optional)</label>
-              <textarea 
-                v-model="form.notes" 
-                placeholder="Any additional information..."
-                rows="3"
-              ></textarea>
-            </div>
-
-            <button type="submit" class="btn-primary" :disabled="!form.full_name.trim() || !form.role">
+            <button type="submit" class="btn-primary" :disabled="!form.full_name.trim()">
               Continue to Card Scan
             </button>
           </form>
@@ -90,11 +50,6 @@
             <h2>{{ scanMessage }}</h2>
             <p class="scan-submessage">{{ scanSubMessage }}</p>
 
-            <!-- Debug info (remove in production) -->
-            <div v-if="debugInfo" class="debug-info">
-              <small>{{ debugInfo }}</small>
-            </div>
-
             <form @submit.prevent="handleCardScan" style="opacity:0; position:absolute;">
               <input
                 ref="cardInput"
@@ -110,18 +65,6 @@
             <div class="preview-item">
               <span class="label">Name:</span>
               <span class="value">{{ form.full_name }}</span>
-            </div>
-            <div class="preview-item" v-if="form.email">
-              <span class="label">Email:</span>
-              <span class="value">{{ form.email }}</span>
-            </div>
-            <div class="preview-item" v-if="form.phone">
-              <span class="label">Phone:</span>
-              <span class="value">{{ form.phone }}</span>
-            </div>
-            <div class="preview-item" v-if="form.role">
-              <span class="label">Role:</span>
-              <span class="value">{{ form.role }}</span>
             </div>
           </div>
 
@@ -142,7 +85,7 @@
         <div v-if="step === 3" class="success-section">
           <div class="success-icon">🎉</div>
           <h2>Registration Successful!</h2>
-          <p>{{ form.full_name }} has been registered as a {{ form.role }}.</p>
+          <p>{{ form.full_name }} has been registered successfully.</p>
           <p class="card-id">Card ID: {{ registeredCardId }}</p>
           
           <div class="action-buttons">
@@ -177,11 +120,7 @@ const supabase = createClient(
 
 const step = ref(1);
 const form = ref({
-  full_name: '',
-  email: '',
-  phone: '',
-  role: '',
-  notes: ''
+  full_name: ''
 });
 
 const scannedCardId = ref('');
@@ -194,7 +133,6 @@ const registeredCardId = ref('');
 const isSubmitting = ref(false);
 const errorMessage = ref('');
 const nameInput = ref(null);
-const debugInfo = ref(''); // For debugging
 
 const refocusCardInput = () => {
   setTimeout(() => {
@@ -205,13 +143,12 @@ const refocusCardInput = () => {
 };
 
 const goToStep2 = () => {
-  if (!form.value.full_name.trim() || !form.value.role) return;
+  if (!form.value.full_name.trim()) return;
   step.value = 2;
   scanStatus.value = 'waiting';
   scanMessage.value = 'Ready to Scan';
   scanSubMessage.value = 'Please tap the NFC card on the reader';
   scannedCardId.value = '';
-  debugInfo.value = '';
   
   nextTick(() => {
     refocusCardInput();
@@ -223,38 +160,28 @@ const goBack = () => {
   scanStatus.value = 'waiting';
   scannedCardId.value = '';
   errorMessage.value = '';
-  debugInfo.value = '';
 };
 
-// Handle NFC card scan
 const handleCardScan = async () => {
   if (!scannedCardId.value.trim()) return;
 
   const cardId = scannedCardId.value.trim();
   scannedCardId.value = '';
   
-  console.log('Scanned card ID:', cardId); // Debug log
-  debugInfo.value = `Scanned: ${cardId.substring(0, 10)}...`;
-  
   try {
-    // Use regular select instead of maybeSingle
     const { data: existingUser, error: checkError } = await supabase
       .from('authorized_users')
       .select('*')
       .eq('nfc_id', cardId);
 
-    console.log('Query result:', { existingUser, checkError }); // Debug log
-
     if (checkError) {
       console.error('Supabase error:', checkError);
       scanStatus.value = 'error';
       scanMessage.value = 'Database Error';
-      scanSubMessage.value = checkError.message || 'Please check console';
-      debugInfo.value = `Error: ${checkError.message}`;
+      scanSubMessage.value = checkError.message;
       return;
     }
 
-    // Check if any user found (existingUser is now an array)
     if (existingUser && existingUser.length > 0) {
       scanStatus.value = 'error';
       scanMessage.value = 'Card Already Registered';
@@ -262,19 +189,16 @@ const handleCardScan = async () => {
       return;
     }
 
-    // Card is available
     registeredCardId.value = cardId;
     scanStatus.value = 'success';
     scanMessage.value = 'Card Ready!';
     scanSubMessage.value = 'Click "Complete Registration" to finish';
-    debugInfo.value = '';
 
   } catch (error) {
-    console.error('Catch error:', error);
+    console.error('Error:', error);
     scanStatus.value = 'error';
     scanMessage.value = 'Error Processing Card';
-    scanSubMessage.value = error.message || 'Please try again';
-    debugInfo.value = `Catch: ${error.message}`;
+    scanSubMessage.value = 'Please try again';
   }
 };
 
@@ -285,18 +209,14 @@ const submitRegistration = async () => {
   errorMessage.value = '';
 
   try {
-    const { data: newUser, error: insertError } = await supabase
+    // Only insert fields that exist in your database
+    const { error: insertError } = await supabase
       .from('authorized_users')
       .insert({
         nfc_id: registeredCardId.value,
         full_name: form.value.full_name.trim(),
-        email: form.value.email.trim() || null,
-        phone: form.value.phone.trim() || null,
-        role: form.value.role,
-        notes: form.value.notes.trim() || null,
         created_at: new Date().toISOString()
-      })
-      .select();
+      });
 
     if (insertError) {
       console.error('Insert error:', insertError);
@@ -309,41 +229,33 @@ const submitRegistration = async () => {
       return;
     }
 
-    // Also log to attendance_logs
+    // Log to attendance_logs
     await supabase
       .from('attendance_logs')
       .insert({
         full_name: form.value.full_name.trim(),
         tap_time: new Date().toISOString(),
-        status: 'registered',
-        nfc_id: registeredCardId.value
+        status: 'registered'
       });
 
     step.value = 3;
 
   } catch (error) {
     console.error('Submit error:', error);
-    errorMessage.value = `An unexpected error occurred: ${error.message}`;
+    errorMessage.value = 'An unexpected error occurred.';
   } finally {
     isSubmitting.value = false;
   }
 };
 
 const registerAnother = () => {
-  form.value = {
-    full_name: '',
-    email: '',
-    phone: '',
-    role: '',
-    notes: ''
-  };
+  form.value.full_name = '';
   scannedCardId.value = '';
   registeredCardId.value = '';
   scanStatus.value = 'waiting';
   scanMessage.value = 'Ready to Scan';
   scanSubMessage.value = 'Please tap the NFC card on the reader';
   errorMessage.value = '';
-  debugInfo.value = '';
   step.value = 1;
   
   nextTick(() => {
@@ -427,7 +339,7 @@ onMounted(() => {
   padding: 40px;
   border-radius: 30px;
   width: 100%;
-  max-width: 600px;
+  max-width: 500px;
   box-shadow: 0 20px 50px rgba(0,0,0,0.08);
 }
 
@@ -482,9 +394,7 @@ onMounted(() => {
   color: #F9707E;
 }
 
-.input-group input,
-.input-group select,
-.input-group textarea {
+.input-group input {
   padding: 12px 16px;
   border: 1px solid #e2e8f0;
   border-radius: 12px;
@@ -494,17 +404,9 @@ onMounted(() => {
   font-family: inherit;
 }
 
-.input-group input:focus,
-.input-group select:focus,
-.input-group textarea:focus {
+.input-group input:focus {
   border-color: #F9707E;
   box-shadow: 0 0 0 3px rgba(249, 112, 126, 0.1);
-}
-
-.input-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 15px;
 }
 
 .btn-primary {
@@ -573,16 +475,6 @@ onMounted(() => {
 .scan-submessage {
   color: #64748b;
   font-size: 0.95rem;
-}
-
-.debug-info {
-  margin-top: 10px;
-  padding: 8px;
-  background: #f1f5f9;
-  border-radius: 6px;
-  color: #64748b;
-  font-family: monospace;
-  font-size: 0.8rem;
 }
 
 .preview-box {
@@ -696,19 +588,5 @@ onMounted(() => {
   padding: 20px;
   color: #94a3b8;
   font-size: 0.85rem;
-}
-
-@media (max-width: 640px) {
-  .input-row {
-    grid-template-columns: 1fr;
-  }
-  
-  .register-card {
-    padding: 25px;
-  }
-  
-  .action-buttons {
-    flex-direction: column;
-  }
 }
 </style>
