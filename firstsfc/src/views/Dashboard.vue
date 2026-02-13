@@ -218,7 +218,7 @@ const handleScan = async () => {
   try {
     // Check if user exists in database
     const { data: userData, error: userError } = await supabase
-      .from('users')
+      .from('authorized_users')
       .select('*')
       .eq('nfc_id', nfcId)
       .single();
