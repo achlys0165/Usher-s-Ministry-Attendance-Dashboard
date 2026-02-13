@@ -250,7 +250,6 @@ const handleScan = async () => {
       .from('attendance_logs')
       .insert({
         user_id: userData.id,
-        nfc_id: nfcId,
         full_name: userData.full_name,
         tap_time: new Date().toISOString()
       });
