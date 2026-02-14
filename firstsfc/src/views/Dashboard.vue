@@ -333,12 +333,11 @@ const exportToCSV = () => {
   if (logs.value.length === 0) return;
 
   // CSV Headers
-  const headers = ['Name', 'NFC ID', 'Time'];
+  const headers = ['Name', 'Time'];
   
   // CSV Rows
   const rows = logs.value.map(log => [
     log.full_name,
-    log.nfc_id,
     new Date(log.tap_time).toLocaleString()
   ]);
 
