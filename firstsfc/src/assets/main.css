@@ -164,6 +164,7 @@ body {
 }
 
 .dashboard-card {
+  background:white;
   display: flex;
   flex-direction: column;
   justify-content: center;  
