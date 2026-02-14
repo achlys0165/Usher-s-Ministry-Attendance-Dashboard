@@ -275,7 +275,7 @@ body {
     margin-top: 20px;
 }
 
-.close-btn-styled {
+.close-btn-styled, .export-btn {
     background: #f1f5f9; 
     border: none;
     padding: 10px 25px;
@@ -286,7 +286,7 @@ body {
     transition: background 0.2s;
 }
 
-.close-btn-styled:hover {
+.close-btn-styled:hover, .export-btn:hover {
     background: #e2e8f0;
 }
 
