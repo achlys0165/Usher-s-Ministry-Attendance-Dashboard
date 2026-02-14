@@ -634,22 +634,6 @@ onUnmounted(() => {
   cursor: not-allowed;
 }
 
-/* Export Button */
-.export-btn {
-    background: #f1f5f9; 
-    border: none;
-    padding: 10px 25px;
-    border-radius: 12px;
-    font-weight: 600;
-    color: #475569;
-    cursor: pointer;
-    transition: background 0.2s;
-}
-
-.export-btn:hover  {
-    background: #e2e8f0;
-}
-
 .modal-footer {
   display: flex;
   justify-content: space-between;
