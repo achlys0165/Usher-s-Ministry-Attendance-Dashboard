@@ -3,14 +3,14 @@
     <nav class="navbar">
       <div class="nav-logo">Usher's Ministry – Attendance Dashboard</div>
       <ul class="nav-links">
-        <li><router-link to="/register" class="register">+ New Usher</router-link></li>
+        <li><router-link to="/register" class="register-link">+ New Usher</router-link></li>
         <li><a href="#" @click.prevent="openLogs" class="logs">Logs</a></li>
         <li><a href="#" @click.prevent="handleLogout" class="logout">Logout</a></li>
       </ul>
     </nav>
 
     <main class="main-content">
-      <!-- Hidden scanner input that captures NFC scans -->
+      <!-- Hidden scanner input -->
       <form @submit.prevent="handleScan" style="opacity:0; position:absolute; top:0; left:0;">
         <input
           ref="scanInput"
@@ -21,23 +21,25 @@
       </form>
 
       <div class="dashboard-card" :class="status">
-        <div class="status-circle" :class="status">
-          <span v-if="status === 'idle'">⌛</span>
-          <span v-if="status === 'success'">✅</span>
-          <span v-if="status === 'unknown'">⚠️</span>
-          <span v-if="status === 'error'">❌</span>
+        <div class="card-content">
+          <div class="status-circle" :class="status">
+            <span v-if="status === 'idle'">⌛</span>
+            <span v-if="status === 'success'">✅</span>
+            <span v-if="status === 'unknown'">⚠️</span>
+            <span v-if="status === 'error'">❌</span>
+          </div>
+
+          <h1 class="main-message">{{ message }}</h1>
+          <p class="sub-message">{{ subMessage }}</p>
+
+          <button
+            v-if="status === 'unknown'"
+            @click="openRegisterModal"
+            class="register-btn"
+          >
+            Register This Card
+          </button>
         </div>
-
-        <h1 class="main-message">{{ message }}</h1>
-        <p v-if="subMessage" class="sub-message">{{ subMessage }}</p>
-
-        <button
-          v-if="status === 'unknown'"
-          @click="openRegisterModal"
-          class="register-btn"
-        >
-          Register This Card
-        </button>
       </div>
     </main>
 
@@ -58,7 +60,7 @@
             <div v-for="log in logs" :key="log.id" class="log-card">
               <div class="log-info">
                 <p class="user-name">{{ log.full_name }}</p>
-                <p class="user-id">{{ log.nfc_id }}</p>
+                <p class="user-nickname" v-if="log.nickname">{{ log.nickname }}</p>
               </div>
               <p class="log-time">{{ formatTime(log.tap_time) }}</p>
             </div>
@@ -74,11 +76,11 @@
       </div>
     </div>
 
-    <!-- Register Card Modal -->
+    <!-- Register Card Modal (for unknown cards) -->
     <div v-if="showRegister" class="modal-overlay" @click.self="closeRegisterModal">
       <div class="modal-content register-modal">
         <div class="modal-header">
-          <h2 class="modal-title">Register New Card</h2>
+          <h2 class="modal-title">Register New Usher</h2>
           <span class="close-icon" @click="closeRegisterModal">&times;</span>
         </div>
 
@@ -87,7 +89,7 @@
           
           <form @submit.prevent="submitRegistration" class="register-form">
             <div class="input-group">
-              <label>Full Name</label>
+              <label>Full Name <span class="required">*</span></label>
               <input 
                 v-model="registerForm.full_name" 
                 type="text" 
@@ -97,21 +99,14 @@
             </div>
 
             <div class="input-group">
-              <label>Email (Optional)</label>
+              <label>Nickname <span class="required">*</span></label>
               <input 
-                v-model="registerForm.email" 
-                type="email" 
-                placeholder="Enter email address"
+                v-model="registerForm.nickname" 
+                type="text" 
+                placeholder="e.g., Bro. Jan, Sis. Marie"
+                required
               />
-            </div>
-
-            <div class="input-group">
-              <label>Phone (Optional)</label>
-              <input 
-                v-model="registerForm.phone" 
-                type="tel" 
-                placeholder="Enter phone number"
-              />
+              <small class="hint">How they want to be greeted</small>
             </div>
 
             <div v-if="registerError" class="error-message">
@@ -123,7 +118,7 @@
                 Cancel
               </button>
               <button type="submit" class="submit-btn" :disabled="isRegistering">
-                {{ isRegistering ? 'Registering...' : 'Register Card' }}
+                {{ isRegistering ? 'Registering...' : 'Register' }}
               </button>
             </div>
           </form>
@@ -144,12 +139,11 @@ import { createClient } from '@supabase/supabase-js';
 
 const router = useRouter();
 
-// Supabase client initialization
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
-const supabase = createClient(supabaseUrl, supabaseKey);
+const supabase = createClient(
+  import.meta.env.VITE_SUPABASE_URL,
+  import.meta.env.VITE_SUPABASE_ANON_KEY
+);
 
-// Reactive State
 const scanInput = ref(null);
 const scannedValue = ref('');
 const status = ref('idle');
@@ -158,21 +152,17 @@ const subMessage = ref('Please tap your NFC card to log attendance');
 const currentUser = ref(null);
 const pendingNfcId = ref('');
 
-// Logs modal state
 const showLogs = ref(false);
 const logs = ref([]);
 
-// Register modal state
 const showRegister = ref(false);
 const registerForm = ref({
   full_name: '',
-  email: '',
-  phone: ''
+  nickname: ''
 });
 const registerError = ref('');
 const isRegistering = ref(false);
 
-// Keep input focused
 const refocusInput = () => {
   setTimeout(() => {
     if (scanInput.value) {
@@ -181,7 +171,6 @@ const refocusInput = () => {
   }, 100);
 };
 
-// Get greeting based on time of day
 const getGreeting = () => {
   const hour = new Date().getHours();
   if (hour < 12) return 'Good morning';
@@ -189,7 +178,6 @@ const getGreeting = () => {
   return 'Good evening';
 };
 
-// Format timestamp for display
 const formatTime = (timestamp) => {
   if (!timestamp) return '';
   return new Date(timestamp).toLocaleTimeString([], { 
@@ -199,7 +187,6 @@ const formatTime = (timestamp) => {
   });
 };
 
-// Format date for CSV filename
 const formatDateForFilename = () => {
   const now = new Date();
   return now.toISOString().split('T')[0];
@@ -212,19 +199,16 @@ const handleScan = async () => {
   const nfcId = scannedValue.value.trim();
   scannedValue.value = '';
   
-  // Reset focus to capture next scan
   refocusInput();
 
   try {
-    // Check if user exists in database
+    // Check authorized_users table - now including nickname
     const { data: userData, error: userError } = await supabase
       .from('authorized_users')
-      .select('*')
-      .eq('nfc_id', nfcId)
-      .single();
+      .select('*, nickname')  // Explicitly select nickname
+      .eq('nfc_id', nfcId);
 
-    if (userError && userError.code !== 'PGRST116') {
-      // PGRST116 = no rows returned, which is expected for unknown cards
+    if (userError) {
       console.error('Error checking user:', userError);
       status.value = 'error';
       message.value = 'System Error';
@@ -233,7 +217,8 @@ const handleScan = async () => {
       return;
     }
 
-    if (!userData) {
+    // userData is an array
+    if (!userData || userData.length === 0) {
       // Unknown card - show register option
       pendingNfcId.value = nfcId;
       status.value = 'unknown';
@@ -243,15 +228,20 @@ const handleScan = async () => {
     }
 
     // User found - log attendance
-    currentUser.value = userData;
+    const user = userData[0];
+    currentUser.value = user;
 
-    // Insert attendance log
+    // Use nickname for greeting if available, otherwise use full_name
+    const displayName = user.nickname || user.full_name;
+
+    // Insert attendance log with nickname
     const { error: logError } = await supabase
       .from('attendance_logs')
       .insert({
-        user_id: userData.id,
-        full_name: userData.full_name,
-        tap_time: new Date().toISOString()
+        full_name: user.full_name,
+        nickname: user.nickname || null,
+        tap_time: new Date().toISOString(),
+        status: 'present'
       });
 
     if (logError) {
@@ -263,12 +253,11 @@ const handleScan = async () => {
       return;
     }
 
-    // Success!
+    // Success! Use nickname in greeting
     status.value = 'success';
-    message.value = `${getGreeting()}, ${userData.full_name}! ✅`;
+    message.value = `${getGreeting()}, ${displayName}! ✅`;
     subMessage.value = 'Your attendance has been logged successfully.';
 
-    // Refresh logs if modal is open
     if (showLogs.value) {
       await fetchLogs();
     }
@@ -284,7 +273,6 @@ const handleScan = async () => {
   }
 };
 
-// Reset status after delay
 const resetStatus = () => {
   setTimeout(() => {
     status.value = 'idle';
@@ -294,18 +282,15 @@ const resetStatus = () => {
   }, 3000);
 };
 
-// Open logs modal
 const openLogs = async () => {
   showLogs.value = true;
   await fetchLogs();
 };
 
-// Close logs modal
 const closeLogs = () => {
   showLogs.value = false;
 };
 
-// Fetch attendance logs from Supabase
 const fetchLogs = async () => {
   try {
     const today = new Date();
@@ -328,26 +313,23 @@ const fetchLogs = async () => {
   }
 };
 
-// Export logs to CSV
 const exportToCSV = () => {
   if (logs.value.length === 0) return;
 
-  // CSV Headers
-  const headers = ['Name', 'Time'];
+  const headers = ['Name', 'Nickname', 'Time', 'Status'];
   
-  // CSV Rows
   const rows = logs.value.map(log => [
     log.full_name,
-    new Date(log.tap_time).toLocaleString()
+    log.nickname || '',
+    new Date(log.tap_time).toLocaleString(),
+    log.status || 'present'
   ]);
 
-  // Combine headers and rows
   const csvContent = [
     headers.join(','),
     ...rows.map(row => row.map(cell => `"${cell}"`).join(','))
   ].join('\n');
 
-  // Create download link
   const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
   const link = document.createElement('a');
   const url = URL.createObjectURL(blob);
@@ -361,30 +343,28 @@ const exportToCSV = () => {
   document.body.removeChild(link);
 };
 
-// Open register modal
 const openRegisterModal = () => {
   showRegister.value = true;
-  registerForm.value = { full_name: '', email: '', phone: '' };
+  registerForm.value.full_name = '';
+  registerForm.value.nickname = '';
   registerError.value = '';
 };
 
-// Close register modal
 const closeRegisterModal = () => {
   showRegister.value = false;
   pendingNfcId.value = '';
-  registerForm.value = { full_name: '', email: '', phone: '' };
+  registerForm.value.full_name = '';
+  registerForm.value.nickname = '';
   registerError.value = '';
   
-  // Reset dashboard status
   status.value = 'idle';
   message.value = 'Welcome! 👋';
   subMessage.value = 'Please tap your NFC card to log attendance';
 };
 
-// Submit registration
 const submitRegistration = async () => {
-  if (!registerForm.value.full_name.trim()) {
-    registerError.value = 'Full name is required';
+  if (!registerForm.value.full_name.trim() || !registerForm.value.nickname.trim()) {
+    registerError.value = 'Full name and nickname are required';
     return;
   }
 
@@ -392,18 +372,14 @@ const submitRegistration = async () => {
   registerError.value = '';
 
   try {
-    // Insert new user
-    const { data: newUser, error: insertError } = await supabase
-      .from('users')
+    const { error: insertError } = await supabase
+      .from('authorized_users')
       .insert({
         nfc_id: pendingNfcId.value,
         full_name: registerForm.value.full_name.trim(),
-        email: registerForm.value.email.trim() || null,
-        phone: registerForm.value.phone.trim() || null,
+        nickname: registerForm.value.nickname.trim(),
         created_at: new Date().toISOString()
-      })
-      .select()
-      .single();
+      });
 
     if (insertError) {
       console.error('Registration error:', insertError);
@@ -416,28 +392,22 @@ const submitRegistration = async () => {
       return;
     }
 
-    // Log attendance for the new user
-    const { error: logError } = await supabase
+    // Log first attendance with nickname
+    await supabase
       .from('attendance_logs')
       .insert({
-        user_id: newUser.id,
-        nfc_id: pendingNfcId.value,
-        full_name: newUser.full_name,
-        tap_time: new Date().toISOString()
+        full_name: registerForm.value.full_name.trim(),
+        nickname: registerForm.value.nickname.trim(),
+        tap_time: new Date().toISOString(),
+        status: 'registered'
       });
 
-    if (logError) {
-      console.error('Error logging first attendance:', logError);
-    }
-
-    // Close modal and show success
     closeRegisterModal();
     
     status.value = 'success';
-    message.value = `Welcome, ${newUser.full_name}! ✅`;
-    subMessage.value = 'Card registered and attendance logged successfully.';
+    message.value = `Welcome, ${registerForm.value.nickname}! ✅`;
+    subMessage.value = 'Usher registered and attendance logged.';
 
-    // Refresh logs if modal is open
     if (showLogs.value) {
       await fetchLogs();
     }
@@ -446,24 +416,19 @@ const submitRegistration = async () => {
 
   } catch (error) {
     console.error('Registration error:', error);
-    registerError.value = 'An unexpected error occurred. Please try again.';
+    registerError.value = 'An unexpected error occurred.';
   } finally {
     isRegistering.value = false;
   }
 };
 
-// Handle logout
 const handleLogout = async () => {
   await supabase.auth.signOut();
   router.push('/');
 };
 
-// Lifecycle hooks
 onMounted(() => {
-  // Ensure input is always focused for NFC scans
   refocusInput();
-  
-  // Add event listener to keep focus
   document.addEventListener('click', refocusInput);
   document.addEventListener('keydown', refocusInput);
 });
@@ -472,10 +437,63 @@ onUnmounted(() => {
   document.removeEventListener('click', refocusInput);
   document.removeEventListener('keydown', refocusInput);
 });
-</script >
+</script>
 
-<style scoped src="../assets/main.css"> 
-/* Status-specific styles */
+<style scoped>
+/* Navigation styles */
+.register-link {
+  text-decoration: none;
+  font-weight: 600;
+  color: #10b981;
+  font-size: 0.95rem;
+}
+
+.register-link:hover {
+  opacity: 0.7;
+}
+
+/* Main card container - perfectly centered */
+.dashboard-card {
+  background: white;
+  padding: 80px 150px;
+  border-radius: 50px;
+  width: 90%;
+  max-width: 700px;
+  min-height: 400px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.04);
+  animation: slideIn 0.3s ease;
+}
+
+/* Inner content wrapper */
+.card-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+/* Status circle */
+.status-circle {
+  width: 100px;
+  height: 100px;
+  background-color: #ffe2ec;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 30px;
+  color: #F9707E;
+  font-weight: 700;
+  font-size: 2.5rem;
+  animation: softBlink 2s infinite ease-in-out;
+}
+
 .status-circle.success {
   background-color: #dcfce7;
   color: #16a34a;
@@ -494,33 +512,37 @@ onUnmounted(() => {
   animation: none;
 }
 
+/* Main message - centered */
 .main-message {
-  font-size: 1.8rem;
+  font-size: 2rem;
   font-weight: 700;
   color: #1e293b;
-  margin-bottom: 0.5rem;
+  margin-bottom: 15px;
+  text-align: center;
+  line-height: 1.3;
+  max-width: 100%;
+  word-wrap: break-word;
 }
 
+/* Sub message - centered */
 .sub-message {
-  font-size: 1rem;
+  font-size: 1.1rem;
   color: #64748b;
-  margin-bottom: 1.5rem;
+  margin-bottom: 25px;
+  text-align: center;
+  line-height: 1.5;
+  max-width: 90%;
 }
 
-.main-message, .sub-message {
-  text-align: center;       /* Ensure text is centered */
-  max-width: 100%;          /* Prevent overflow */
-  word-wrap: break-word;    /* Wrap long names */
-}
-
+/* Register button */
 .register-btn {
   background: #F9707E;
   color: white;
   border: none;
-  padding: 12px 30px;
-  border-radius: 12px;
+  padding: 15px 40px;
+  border-radius: 15px;
   font-weight: 600;
-  font-size: 1rem;
+  font-size: 1.1rem;
   cursor: pointer;
   transition: all 0.3s ease;
   margin-top: 10px;
@@ -529,10 +551,28 @@ onUnmounted(() => {
 .register-btn:hover {
   background: #ff4d6d;
   transform: translateY(-2px);
-  box-shadow: 0 5px 15px rgba(249, 112, 126, 0.3);
+  box-shadow: 0 8px 20px rgba(249, 112, 126, 0.3);
 }
 
-/* Register Modal Styles */
+/* Animations */
+@keyframes softBlink {
+  0% { opacity: 1; }
+  50% { opacity: 0.3; }
+  100% { opacity: 1; }
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Modal styles */
 .register-modal {
   max-width: 450px;
 }
@@ -568,6 +608,16 @@ onUnmounted(() => {
   font-size: 0.85rem;
   font-weight: 600;
   color: #475569;
+}
+
+.required {
+  color: #F9707E;
+}
+
+.hint {
+  font-size: 0.8rem;
+  color: #94a3b8;
+  margin-top: 4px;
 }
 
 .input-group input {
@@ -634,6 +684,23 @@ onUnmounted(() => {
   cursor: not-allowed;
 }
 
+.export-btn {
+  background: #10b981;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-right: 10px;
+}
+
+.export-btn:hover {
+  background: #059669;
+  transform: translateY(-1px);
+}
+
 .modal-footer {
   display: flex;
   justify-content: space-between;
@@ -661,20 +728,31 @@ onUnmounted(() => {
   border-radius: 3px;
 }
 
-/* Animation for status changes */
-@keyframes slideIn {
-  from {
-    opacity: 0;
-    transform: translateY(-10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+.user-nickname {
+  font-size: 0.8rem;
+  color: #94a3b8;
+  margin-top: 2px;
 }
 
-.dashboard-card {
-  animation: slideIn 0.3s ease;
+/* Responsive adjustments */
+@media (max-width: 640px) {
+  .dashboard-card {
+    padding: 40px 30px;
+    min-height: 350px;
+  }
+  
+  .main-message {
+    font-size: 1.5rem;
+  }
+  
+  .sub-message {
+    font-size: 1rem;
+  }
+  
+  .status-circle {
+    width: 80px;
+    height: 80px;
+    font-size: 2rem;
+  }
 }
-
 </style>
