@@ -286,9 +286,14 @@ body {
     transition: background 0.2s;
 }
 
+.export-btn{
+    margin-right: 1.5px;
+}
+
 .close-btn-styled:hover, .export-btn:hover {
     background: #e2e8f0;
 }
+
 
 .dashboard-footer {
   text-align: center;
