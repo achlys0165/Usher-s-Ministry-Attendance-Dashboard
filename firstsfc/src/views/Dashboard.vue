@@ -202,10 +202,10 @@ const handleScan = async () => {
   refocusInput();
 
   try {
-    // Check authorized_users table - now including nickname
+    // Check authorized_users table
     const { data: userData, error: userError } = await supabase
       .from('authorized_users')
-      .select('*, nickname')  // Explicitly select nickname
+      .select('*')
       .eq('nfc_id', nfcId);
 
     if (userError) {
@@ -234,7 +234,7 @@ const handleScan = async () => {
     // Use nickname for greeting if available, otherwise use full_name
     const displayName = user.nickname || user.full_name;
 
-    // Insert attendance log with nickname
+    // Insert attendance log - only using columns that exist
     const { error: logError } = await supabase
       .from('attendance_logs')
       .insert({
@@ -372,6 +372,7 @@ const submitRegistration = async () => {
   registerError.value = '';
 
   try {
+    // Only insert fields that exist in your database
     const { error: insertError } = await supabase
       .from('authorized_users')
       .insert({
@@ -455,7 +456,7 @@ onUnmounted(() => {
 /* Main card container - perfectly centered */
 .dashboard-card {
   background: white;
-  padding: 80px 150px;
+  padding: 60px 80px;
   border-radius: 50px;
   width: 90%;
   max-width: 700px;
